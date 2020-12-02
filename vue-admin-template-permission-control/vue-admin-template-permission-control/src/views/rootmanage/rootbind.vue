@@ -1,0 +1,217 @@
+<template>
+  <div>
+    <el-select
+      v-model="deviceTypeId"
+      value-key=""
+      placeholder=""
+      clearable
+      filterable
+      @change="change"
+    >
+      <el-option
+        v-for="item in deviceTypelist"
+        :key="item.id"
+        :label="item.name"
+        :value="item.id"
+      >
+      </el-option>
+    </el-select>
+
+    <div class="chequer">
+      <div class="chequeritem" @click="to(6)">
+        <div>固定</div>
+        <img
+          v-if="containerlistfixed6.commodifyId"
+          :src="`${process.env.VUE_APP_PIC_API}${containerlistfixed6.commodify.pircture}`"
+          alt=""
+        />
+        <i v-else class="el-icon-plus avatar-uploader-icon upload"></i>
+        <div class="words">
+          <span>{{ containerlistfixed6.commodify.name }}</span>
+          <span
+            >{{ containerlistfixed6.commodify.price
+            }}{{ containerlistfixed6.commodify.unit }}</span
+          >
+        </div>
+        <el-button
+          v-if="containerlistfixed6.commodifyId"
+          type="primary"
+          size="mini"
+          style="width: 80%"
+          >修改</el-button
+        >
+      </div>
+      <div class="chequeritem" @click="to(7)">
+        <div>固定</div>
+        <img
+          v-if="containerlistfixed7.commodifyId"
+          :src="`${process.env.VUE_APP_PIC_API}${containerlistfixed7.commodify.pircture}`"
+          alt=""
+        />
+        <i v-else class="el-icon-plus avatar-uploader-icon upload"></i>
+        <div class="words">
+          <span>{{ containerlistfixed7.commodify.name }}</span>
+          <span
+            >{{ containerlistfixed7.commodify.price
+            }}{{ containerlistfixed7.commodify.unit }}</span
+          >
+        </div>
+        <el-button
+          v-if="containerlistfixed7.commodifyId"
+          type="primary"
+          size="mini"
+          style="width: 80%"
+          >修改</el-button
+        >
+      </div>
+    </div>
+
+    <div class="chequer">
+      <div
+        class="chequeritem"
+        v-for="item in containerlistnofix"
+        :key="item.id"
+      >
+        <i class="el-icon-close close" @click="deletecon(item.containerId)"></i>
+        <div class="number">{{ item.number }}</div>
+        <img :src="`${process.env.VUE_APP_PIC_API}${item.commodify.pircture}`" alt="" />
+        <div>
+          <span>{{ item.commodify.name }}</span>
+          <span>{{ item.commodify.price }}{{ item.commodify.unit }}</span>
+        </div>
+        <el-button type="primary" size="mini" style="width: 80%"
+          >修改</el-button
+        >
+      </div>
+      <div class="chequeritem add" @click="to()">
+        <i class="el-icon-plus"></i>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { querycontainerlist, deviceTypelist } from "@/api/table";
+export default {
+  data() {
+    return {
+      fixedimglf: require("../../assets/image/img_1.png"),
+      fixedimgrg: require("../../assets/image/img_1.png"),
+      containerlist: [],
+      containerlistfixed6: {},
+      containerlistfixed7: {},
+      containerlistnofix: [],
+      deviceTypeId: "",
+      deviceTypelist: [],
+    };
+  },
+  mounted() {
+    deviceTypelist()
+      .then((response) => {
+        this.deviceTypelist = response.data;
+      })
+      .catch((err) => {});
+  },
+
+  computed: {},
+  methods: {
+    change(val) {
+      console.log(val);
+      this.queryList(val);
+    },
+    to(number) {
+      this.$router.push({
+        name: "goodslist",
+        path: "/goodsmanage/goodslist",
+        params: {
+          typeId: this.deviceTypeId,
+          number: number ? number : this.containerlistnofix.length + 1,
+        },
+      });
+    },
+    deletecon(containerId) {},
+    queryList(deviceTypeId) {
+      querycontainerlist({ deviceTypeId: deviceTypeId })
+        .then((response) => {
+          this.containerlist = response.data.items;
+          let arr = this.containerlist.filter((data) => data.number == 6);
+          if (arr.length > 0) {
+            this.containerlistfixed6 = arr[0];
+          }
+          arr = this.containerlist.filter((data) => data.number == 7);
+          if (arr.length > 0) {
+            this.containerlistfixed7 = arr[0];
+          }
+
+          this.containerlistnofix = this.containerlist.filter(
+            (data) => data.number != 6 && data.number != 7
+          );
+          console.log(this.containerlistfixed6);
+          console.log(this.containerlistfixed7);
+        })
+        .catch((err) => {});
+    },
+  },
+};
+</script>
+
+<style  lang='scss' scoped>
+.chequer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 20px;
+  align-items: center;
+  > div {
+    margin-right: 20px;
+  }
+  .chequeritem {
+    position: relative;
+    background: #97a8be;
+    height: 260px;
+    width: 200px;
+    border: solid #97a8be;
+    border-radius: 10px;
+    display: flex;
+    margin-bottom: 20px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    .close {
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+
+    .number {
+      border-radius: 50%;
+      background-color: rgb(64, 158, 255);
+      width: 20px;
+      height: 20px;
+      text-align: center;
+      color: white;
+      line-height: 20px;
+    }
+    * {
+      margin: 5px;
+    }
+    img {
+      width: 80%;
+      height: 150px;
+    }
+    .words {
+      height: 20px;
+    }
+    .upload {
+      width: 80%;
+      height: 150px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+  .add {
+    height: 260px;
+  }
+}
+</style>
