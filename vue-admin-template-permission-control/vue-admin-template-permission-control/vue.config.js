@@ -47,14 +47,7 @@ module.exports = {
           '^/api':''
       }        
     },
-    '/apipic': {   
-      target: 'http://lyz/vending/',  // 目标地址
-   
-      changeOrigin: true,   // 设置同源  默认false，是否需要改变原始主机头为目标URL,       
-      pathRewrite:{
-        '^/apipic':''
-    }        
-  },
+
  
     }
 
