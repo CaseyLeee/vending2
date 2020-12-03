@@ -22,12 +22,8 @@
         maxLength="9"
       ></el-input>
     </el-form-item>
-     <el-form-item label="单位">
-      <el-input
-        v-model.number="form.unit"
-        
-        maxLength="9"
-      ></el-input>
+    <el-form-item label="单位">
+      <el-input v-model.number="form.unit" maxLength="9"></el-input>
     </el-form-item>
 
     <el-form-item label="产品图片" prop="file" ref="file">
@@ -55,7 +51,7 @@
 </template>
 
 <script>
-import { addGoods } from "@/api/table";
+import { addGoods, commodifyupdate } from "@/api/table";
 
 export default {
   data() {
@@ -71,7 +67,7 @@ export default {
         details: "",
         unit: "",
       },
-     
+
       rules: {
         name: [
           {
@@ -111,43 +107,50 @@ export default {
     };
   },
   mounted() {
-    let id = this.$route.params.id;
-    if (id != null) {
+    let row = this.$route.params.row;
+    if (row != undefined) {
       this.oper = "立即修改";
+        this.form= Object.assign({}, this.form, row);
     }
+  
     //通过id获取商品参数
-    console.log("id", id);
+    console.log("row", row);
   },
   methods: {
     getAvator(picturePath) {
       return `${process.env.VUE_APP_PIC_API}/${picturePath}`;
     },
-    // onchange(file, fileList) {
-    //   this.imageUrl = URL.createObjectURL(file.raw);
 
-    // },
     uploadFile(res) {
       if (res.code == 1) {
-        
         this.form.pircture = res.message;
         this.$refs.file.clearValidate();
-      }
-      else{
-         this.$message.error('图片上传失败');
+      } else {
+        this.$message.error("图片上传失败");
       }
     },
     async onSubmit(formName) {
       this.$refs[formName].validate(async (valid) => {
         if (valid) {
-          this.form.commodifyId=this.guid()
-          console.log(this.form)
-          addGoods(this.form)
-            .then((response) => {
-               this.$message.success('添加商品成功');
-            })
-            .catch((error) => {
-              this.$message.error(error);
-            });
+        
+          if (this.oper == "立即修改") {
+            commodifyupdate(this.form)
+              .then((response) => {
+                this.$message.success("修改商品成功");
+              })
+              .catch((error) => {
+                this.$message.error(error);
+              });
+          } else {
+            this.form.commodifyId = this.guid();
+            addGoods(this.form)
+              .then((response) => {
+                this.$message.success("添加商品成功");
+              })
+              .catch((error) => {
+                this.$message.error(error);
+              });
+          }
         } else {
         }
       });

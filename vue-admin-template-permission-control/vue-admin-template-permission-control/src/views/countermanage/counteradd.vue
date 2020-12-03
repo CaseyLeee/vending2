@@ -6,7 +6,6 @@
     label-width="150px"
     :inline="false"
     size="normal"
-     
   >
     <el-form-item label="sn号(唯一识别码)" prop="identifyId">
       <el-input v-model="form.identifyId"></el-input>
@@ -21,10 +20,10 @@
     <el-form-item label="归属账号">
       <el-input v-model="form.userId"></el-input>
     </el-form-item>
-    <el-form-item label="二维地理位置">
+    <el-form-item label="二维地理位置" v-if="oper=='立即添加'">
       <el-input v-model="form.position"></el-input>
     </el-form-item>
-    <el-form-item label="货柜类型" prop="type">
+    <el-form-item label="货柜类型" prop="type" v-if="oper=='立即添加'">
       <el-select v-model="form.type" placeholder="请选择">
         <el-option
           v-for="item in deviceTypelist"
@@ -35,7 +34,7 @@
         </el-option>
       </el-select>
     </el-form-item>
-    <el-form-item label="设备存货情况">
+    <el-form-item label="设备存货情况" v-if="oper=='立即添加'">
       <el-input v-model="form.containerState"></el-input>
     </el-form-item>
 
@@ -46,7 +45,7 @@
 </template>
 
 <script>
-import { deviceTypelist, deviceadd } from "@/api/table";
+import { deviceTypelist, deviceadd, deviceupdate } from "@/api/table";
 export default {
   data() {
     return {
@@ -84,33 +83,45 @@ export default {
   mounted() {
     deviceTypelist()
       .then((response) => {
-      
         this.deviceTypelist = response.data;
       })
       .catch((err) => {});
 
-    let id = this.$route.params.id;
-    if (id != null) {
+    let row = this.$route.params.row;
+    if (row != undefined) {
       this.oper = "立即修改";
+      this.form = Object.assign({}, this.form, row);
     }
-    //通过id获取货柜参数
-    console.log("id", id);
   },
   methods: {
-     onSubmit(formName) {
+    onSubmit(formName) {
       this.$refs[formName].validate(async (valid) => {
         if (valid) {
-          this.form.deviceId=this.guid()
-          deviceadd(this.form)
-            .then((response) => {
+          if (this.oper != "立即修改") {
+            this.form.deviceId = this.guid();
+            deviceadd(this.form)
+              .then((response) => {
+                this.$message.success("添加设备成功");
+              })
+              .catch((err) => {
+               
+                
+              });
+          } else {
+            deviceupdate(this.form)
+              .then((response) => {
+                this.$message.success("修改设备成功");
+              })
+              .catch((err) => {
+                
               
-            })
-            .catch((err) => {});
+              });
+          }
         } else {
         }
       });
     },
-     guid() {
+    guid() {
       function S4() {
         return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
       }

@@ -22,47 +22,33 @@
         <div>固定</div>
         <img
           v-if="containerlistfixed6.commodifyId"
-          :src="`${process.env.VUE_APP_PIC_API}${containerlistfixed6.commodify.pircture}`"
+          :src="getAvator(containerlistfixed6.commodify.pircture)"
           alt=""
         />
         <i v-else class="el-icon-plus avatar-uploader-icon upload"></i>
-        <div class="words">
+        <div class="words" v-if="containerlistfixed6.commodifyId">
           <span>{{ containerlistfixed6.commodify.name }}</span>
           <span
             >{{ containerlistfixed6.commodify.price
             }}{{ containerlistfixed6.commodify.unit }}</span
           >
         </div>
-        <el-button
-          v-if="containerlistfixed6.commodifyId"
-          type="primary"
-          size="mini"
-          style="width: 80%"
-          >修改</el-button
-        >
       </div>
       <div class="chequeritem" @click="to(7)">
         <div>固定</div>
         <img
           v-if="containerlistfixed7.commodifyId"
-          :src="`${process.env.VUE_APP_PIC_API}${containerlistfixed7.commodify.pircture}`"
+          :src="getAvator(containerlistfixed7.commodify.pircture)"
           alt=""
         />
         <i v-else class="el-icon-plus avatar-uploader-icon upload"></i>
-        <div class="words">
+        <div class="words" v-if="containerlistfixed7.commodifyId">
           <span>{{ containerlistfixed7.commodify.name }}</span>
           <span
             >{{ containerlistfixed7.commodify.price
             }}{{ containerlistfixed7.commodify.unit }}</span
           >
         </div>
-        <el-button
-          v-if="containerlistfixed7.commodifyId"
-          type="primary"
-          size="mini"
-          style="width: 80%"
-          >修改</el-button
-        >
       </div>
     </div>
 
@@ -74,14 +60,11 @@
       >
         <i class="el-icon-close close" @click="deletecon(item.containerId)"></i>
         <div class="number">{{ item.number }}</div>
-        <img :src="`${process.env.VUE_APP_PIC_API}${item.commodify.pircture}`" alt="" />
+        <img :src="getAvator(item.commodify.pircture)" alt="" />
         <div>
           <span>{{ item.commodify.name }}</span>
           <span>{{ item.commodify.price }}{{ item.commodify.unit }}</span>
         </div>
-        <el-button type="primary" size="mini" style="width: 80%"
-          >修改</el-button
-        >
       </div>
       <div class="chequeritem add" @click="to()">
         <i class="el-icon-plus"></i>
@@ -91,7 +74,11 @@
 </template>
 
 <script>
-import { querycontainerlist, deviceTypelist } from "@/api/table";
+import {
+  querycontainerlist,
+  deviceTypelist,
+  containerdelete,
+} from "@/api/table";
 export default {
   data() {
     return {
@@ -115,8 +102,14 @@ export default {
 
   computed: {},
   methods: {
+    getAvator(picturePath) {
+      return `${process.env.VUE_APP_PIC_API}/${picturePath}`;
+    },
     change(val) {
       console.log(val);
+      this.containerlistfixed7 = {};
+      this.containerlistfixed6 = {};
+      this.containerlistnofix = [];
       this.queryList(val);
     },
     to(number) {
@@ -129,11 +122,22 @@ export default {
         },
       });
     },
-    deletecon(containerId) {},
+    deletecon(containerId) {
+      containerdelete(this.$qs.stringify({ containerId: containerId }))
+        .then((response) => {
+          this.queryList();
+          this.$message({
+            type: "success",
+            message: "删除成功!",
+          });
+        })
+        .catch((err) => {});
+    },
     queryList(deviceTypeId) {
       querycontainerlist({ deviceTypeId: deviceTypeId })
         .then((response) => {
-          this.containerlist = response.data.items;
+          this.containerlist = response.data;
+
           let arr = this.containerlist.filter((data) => data.number == 6);
           if (arr.length > 0) {
             this.containerlistfixed6 = arr[0];
@@ -146,8 +150,6 @@ export default {
           this.containerlistnofix = this.containerlist.filter(
             (data) => data.number != 6 && data.number != 7
           );
-          console.log(this.containerlistfixed6);
-          console.log(this.containerlistfixed7);
         })
         .catch((err) => {});
     },

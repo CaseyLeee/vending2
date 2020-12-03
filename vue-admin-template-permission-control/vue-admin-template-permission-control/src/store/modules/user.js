@@ -41,10 +41,10 @@ const actions = {
       formData.append('password',  password)
 
       login(formData).then(response => {
-        const { data } = response
-        commit('SET_TOKEN', data)
+        const { data,message } = response
+        commit('SET_TOKEN', message)
         commit('SET_NAME', username)
-        setToken(data)
+        setToken(message)
      
         resolve()
       }).catch(error => {

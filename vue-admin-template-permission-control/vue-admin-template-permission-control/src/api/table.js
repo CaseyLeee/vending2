@@ -50,4 +50,61 @@ export function deviceadd(data) {
     data
   })
 }
+export function deviceQuery(data) {
+  return request({
+    url: '/backGround/device/deviceQuery',
+    method: 'post',
+    data
+  })
+}
+export function  userregist(data) {
+  return request({
+    url: '/user/regist',
+    method: 'post',
+    data
+  })
+}
+export function  userquery(data) {
+  return request({
+    url: '/user/query',
+    method: 'post',
+    data
+  })
+}
+export function  deviceTypedelete(data) {
+  return request({
+    url: '/backGround/deviceType/delete',
+    method: 'post',
+    data
+  })
+}
+export function  containerdelete(data) {
+  return request({
+    url: '/backGround/container/delete',
+    method: 'post',
+    data
+  })
+}
+export function  commodifyupdate(data) {
+  return request({
+    url: '/backGround/commodify/update',
+    method: 'post',
+    data
+  })
+}
+export function  deviceupdate(data) {
+  return request({
+    url: '/backGround/device/update',
+    method: 'post',
+    data
+  })
+}
+export function  userdelete(data) {
+  return request({
+    url: '/user/delete',
+    method: 'post',
+    data
+  })
+}
+
 
