@@ -106,5 +106,13 @@ export function  userdelete(data) {
     data
   })
 }
+export function  devicelist(data) {
+  return request({
+    url: '/foreground/device/list',
+    method: 'post',
+    data
+  })
+}
+
 
 

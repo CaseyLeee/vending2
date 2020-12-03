@@ -9,6 +9,7 @@
       "
       style="width: 100%"
     >
+     <el-table-column label="userid" prop="userId"> </el-table-column>
       <el-table-column label="名称" prop="name"> </el-table-column>
 
       <el-table-column label="账号" prop="account"> </el-table-column>
