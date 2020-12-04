@@ -17,6 +17,10 @@ import '@/permission' // permission control
 
 import  qs from 'qs'
 
+// import { Popup } from 'vant';
+
+// Vue.use(Popup);
+
  Vue.prototype.$qs = qs
 
 /**

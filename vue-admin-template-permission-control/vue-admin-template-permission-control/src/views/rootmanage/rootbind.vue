@@ -18,22 +18,6 @@
     </el-select>
 
     <div class="chequer">
-      <div class="chequeritem" @click="to(6)">
-        <div>固定</div>
-        <img
-          v-if="containerlistfixed6.commodifyId"
-          :src="getAvator(containerlistfixed6.commodify.pircture)"
-          alt=""
-        />
-        <i v-else class="el-icon-plus avatar-uploader-icon upload"></i>
-        <div class="words" v-if="containerlistfixed6.commodifyId">
-          <span>{{ containerlistfixed6.commodify.name }}</span>
-          <span
-            >{{ containerlistfixed6.commodify.price
-            }}{{ containerlistfixed6.commodify.unit }}</span
-          >
-        </div>
-      </div>
       <div class="chequeritem" @click="to(7)">
         <div>固定</div>
         <img
@@ -47,6 +31,22 @@
           <span
             >{{ containerlistfixed7.commodify.price
             }}{{ containerlistfixed7.commodify.unit }}</span
+          >
+        </div>
+      </div>
+      <div class="chequeritem" @click="to(8)">
+        <div>固定</div>
+        <img
+          v-if="containerlistfixed8.commodifyId"
+          :src="getAvator(containerlistfixed8.commodify.pircture)"
+          alt=""
+        />
+        <i v-else class="el-icon-plus avatar-uploader-icon upload"></i>
+        <div class="words" v-if="containerlistfixed8.commodifyId">
+          <span>{{ containerlistfixed8.commodify.name }}</span>
+          <span
+            >{{ containerlistfixed8.commodify.price
+            }}{{ containerlistfixed8.commodify.unit }}</span
           >
         </div>
       </div>
@@ -85,8 +85,8 @@ export default {
       fixedimglf: require("../../assets/image/img_1.png"),
       fixedimgrg: require("../../assets/image/img_1.png"),
       containerlist: [],
-      containerlistfixed6: {},
       containerlistfixed7: {},
+      containerlistfixed8: {},
       containerlistnofix: [],
       deviceTypeId: "",
       deviceTypelist: [],
@@ -108,7 +108,7 @@ export default {
     change(val) {
       console.log(val);
       this.containerlistfixed7 = {};
-      this.containerlistfixed6 = {};
+      this.containerlistfixed8 = {};
       this.containerlistnofix = [];
       this.queryList(val);
     },
@@ -138,17 +138,17 @@ export default {
         .then((response) => {
           this.containerlist = response.data;
 
-          let arr = this.containerlist.filter((data) => data.number == 6);
-          if (arr.length > 0) {
-            this.containerlistfixed6 = arr[0];
-          }
-          arr = this.containerlist.filter((data) => data.number == 7);
+          let arr = this.containerlist.filter((data) => data.number == 7);
           if (arr.length > 0) {
             this.containerlistfixed7 = arr[0];
           }
+          arr = this.containerlist.filter((data) => data.number ==8);
+          if (arr.length > 0) {
+            this.containerlistfixed8 = arr[0];
+          }
 
           this.containerlistnofix = this.containerlist.filter(
-            (data) => data.number != 6 && data.number != 7
+            (data) => data.number !=7 && data.number != 8
           );
         })
         .catch((err) => {});
