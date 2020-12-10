@@ -9,6 +9,7 @@
       "
       style="width: 100%"
     >
+    <el-table-column label="设备ID" prop="deviceId"> </el-table-column>
       <el-table-column label="sn号" prop="identifyId"> </el-table-column>
       <el-table-column label="设备名称" prop="name"> </el-table-column>
  

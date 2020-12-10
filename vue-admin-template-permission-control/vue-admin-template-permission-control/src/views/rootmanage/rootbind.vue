@@ -30,7 +30,7 @@
           <span>{{ containerlistfixed7.commodify.name }}</span>
           <span
             >{{ containerlistfixed7.commodify.price
-            }}{{ containerlistfixed7.commodify.unit }}</span
+            }}/{{ containerlistfixed7.commodify.unit }}</span
           >
         </div>
       </div>
@@ -46,7 +46,7 @@
           <span>{{ containerlistfixed8.commodify.name }}</span>
           <span
             >{{ containerlistfixed8.commodify.price
-            }}{{ containerlistfixed8.commodify.unit }}</span
+            }}/{{ containerlistfixed8.commodify.unit }}</span
           >
         </div>
       </div>
@@ -63,7 +63,7 @@
         <img :src="getAvator(item.commodify.pircture)" alt="" />
         <div>
           <span>{{ item.commodify.name }}</span>
-          <span>{{ item.commodify.price }}{{ item.commodify.unit }}</span>
+          <span>{{ item.commodify.price }}/{{ item.commodify.unit }}</span>
         </div>
       </div>
       <div class="chequeritem add" @click="to()">

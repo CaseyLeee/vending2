@@ -172,7 +172,29 @@ export const constantRoutes = [
       }
     
     ]
-  }
+  },
+  {
+    path: '/ordermanage',
+    component: Layout,
+    redirect: '/ordermanage/orderlist',
+    name: 'ordermanage',
+    meta: { title: '订单管理', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'orderlist',
+        name: 'orderlist',
+        component: () => import('@/views/ordermanage/orderlist'),
+        meta: { title: '订单列表', icon: 'table' }
+      },
+      {
+        path: 'queryrefund',
+        name: 'queryrefund',
+        component: () => import('@/views/ordermanage/queryrefund'),
+        meta: { title: '退款查询', icon: 'table' }
+      }
+     
+    ]
+  },
 ]
 
 /**

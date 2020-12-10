@@ -114,5 +114,27 @@ export function  devicelist(data) {
   })
 }
 
+export function  refund(data) {
+  return request({
+    url: '/foreground/refund/add',
+    method: 'post',
+    data
+  })
+}
+export function  refundquery(data) {
+  return request({
+    url: '/foreground/refund/query',
+    method: 'post',
+    data
+  })
+}
+export function  orderquery(data) {
+  return request({
+    url: '/foreground/order/query',
+    method: 'post',
+    data
+  })
+}
+
 
 

@@ -22,7 +22,7 @@
         maxLength="9"
       ></el-input>
     </el-form-item>
-    <el-form-item label="单位">
+    <el-form-item label="单位" prop="unit">
       <el-input v-model.number="form.unit" maxLength="9"></el-input>
     </el-form-item>
 
@@ -87,6 +87,13 @@ export default {
           {
             required: true,
             message: "请输入价格",
+            trigger: "blur",
+          },
+        ],
+        unit: [
+          {
+            required: true,
+            message: "请输入商品单位(小时/只/个...)",
             trigger: "blur",
           },
         ],
