@@ -24,8 +24,8 @@ module.exports = {
    * In most cases please use '/' !!!
    * Detail: https://cli.vuejs.org/config/#publicpath
    */
-  publicPath: '/',
-  outputDir: 'dist',
+  publicPath: './',
+  outputDir: 'page',
   assetsDir: 'static',
   lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
@@ -41,6 +41,7 @@ module.exports = {
      
       '/api': {   
         target: 'http://lyz:7126/vending/',  // 目标地址
+       // target: 'http://www.iimiim.cn/vending/', 
      
         changeOrigin: true,   // 设置同源  默认false，是否需要改变原始主机头为目标URL,       
         pathRewrite:{
