@@ -82,8 +82,7 @@ import {
 export default {
   data() {
     return {
-      fixedimglf: require("../../assets/image/img_1.png"),
-      fixedimgrg: require("../../assets/image/img_1.png"),
+     
       containerlist: [],
       containerlistfixed7: {},
       containerlistfixed8: {},

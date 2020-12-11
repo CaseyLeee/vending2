@@ -66,14 +66,14 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="submit">确 定</el-button>
+        <el-button type="primary" @click="refundsubmit">确 定</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { refund,orderquery } from "@/api/table";
+import { refund, orderquery, refundadd } from "@/api/table";
 export default {
   data() {
     return {
@@ -82,7 +82,7 @@ export default {
       search: "",
       bind: false,
       goodslist: [],
-      picurl: require("../../assets/image/rice.png"),
+      
       form: {
         pageNum: 1,
         pageSize: 20,
@@ -92,8 +92,9 @@ export default {
         sizes: [20],
       },
       formpost: {
-        money:"",
-        reason:""
+        orderId: "",
+        money: "",
+        reason: "",
       },
     };
   },
@@ -120,12 +121,15 @@ export default {
     },
 
     refundadd(orderId) {
-        this.formpost.orderId=orderId
+      this.formpost.orderId = orderId;
       this.dialogFormVisible = true;
-      
+    },
+    refundsubmit() {
+      refundadd(this.formpost)
+        .then((response) => {})
+        .catch((err) => {});
     },
     queryList() {
-    
       orderquery(this.form)
         .then((response) => {
           this.goodslist = response.data;

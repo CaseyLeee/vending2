@@ -7,11 +7,11 @@ export function getGoods(data) {
     data
   })
 }
-export function querycontainerlist(param) {
+export function querycontainerlist(params) {
   return request({
-    url: '/public/container/list',
+    url: '/backGround/container/list',
     method: 'get',
-    params:param
+    params
   })
 }
 export function addGoods(data) {
@@ -133,6 +133,14 @@ export function  orderquery(data) {
     url: '/foreground/order/query',
     method: 'post',
     data
+  })
+}
+
+export function  refundadd(params) {
+  return request({
+    url: '/foreground/refund/add',
+    method: 'get',
+    params
   })
 }
 

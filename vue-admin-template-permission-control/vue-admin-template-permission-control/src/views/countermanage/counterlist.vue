@@ -59,7 +59,7 @@ export default {
       search: "",
       bind: false,
       goodslist: [],
-      picurl: require("../../assets/image/rice.png"),
+      
       form: {
         pageNum: 1,
         pageSize: 20,
