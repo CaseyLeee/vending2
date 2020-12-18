@@ -17,7 +17,7 @@
     <el-form-item label="备注">
       <el-input v-model="form.remrak"></el-input>
     </el-form-item>
-    <el-form-item label="归属账号">
+    <el-form-item label="归属账号(userid)">
       <el-input v-model="form.userId"></el-input>
     </el-form-item>
     <el-form-item label="二维地理位置" v-if="oper=='立即添加'">
@@ -34,7 +34,7 @@
         </el-option>
       </el-select>
     </el-form-item>
-    <el-form-item label="设备存货情况" v-if="oper=='立即添加'">
+    <el-form-item label="设备存货情况" v-if="oper=='立即添加'"   prop="containerState">
       <el-input v-model="form.containerState"></el-input>
     </el-form-item>
 
@@ -48,6 +48,7 @@
 import { deviceTypelist, deviceadd, deviceupdate } from "@/api/table";
 export default {
   data() {
+    
     return {
       deviceTypelist: [],
       oper: "立即添加",
@@ -63,6 +64,13 @@ export default {
         containerState: "",
       },
       rules: {
+          identifyId: [
+          {
+            required: true,
+            message: "请输入SN号",
+            trigger: "blur",
+          },
+        ],
         name: [
           {
             required: true,
@@ -74,6 +82,13 @@ export default {
           {
             required: true,
             message: "请选择设备类型",
+            trigger: "change",
+          },
+        ],
+           containerState: [
+          {
+            required: true,
+            message: "请输入设备存货情况 eg:00000000",
             trigger: "change",
           },
         ],

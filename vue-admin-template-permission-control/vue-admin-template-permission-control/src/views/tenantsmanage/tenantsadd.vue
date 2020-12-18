@@ -49,14 +49,21 @@
     </el-form-item>
 
     <el-form-item label="账户类型" prop="type">
-     <el-select v-model="form.type" value-key="" placeholder="" clearable filterable >
-       <el-option v-for="item in options"
-         :key="item.value"
-         :label="item.label"
-         :value="item.value">
-       </el-option>
-     </el-select>
-     
+      <el-select
+        v-model="form.type"
+        value-key=""
+        placeholder=""
+        clearable
+        filterable
+      >
+        <el-option
+          v-for="item in options"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        >
+        </el-option>
+      </el-select>
     </el-form-item>
     <el-form-item label="微信id" prop="weixin">
       <el-input v-model="form.weixin"></el-input>
@@ -75,9 +82,27 @@
 import { userregist } from "@/api/table";
 export default {
   data() {
+    var checkEmail = (rule, value, callback) => {
+      
+      const mailReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
+      if (value) {
+        if (mailReg.test(value)) {
+         
+          callback();
+        } else {
+          callback(new Error("请输入正确的邮箱格式"));
+        }
+      }
+      else{
+         callback();
+      }
+    };
     return {
       uploadurl: `${process.env.VUE_APP_BASE_API}/file/upload`,
-      options: [{ label: "普通商户", value: "0" },{ label: "机器运维", value: "1" }],
+      options: [
+        { label: "普通商户", value: "0" },
+        { label: "机器运维", value: "1" },
+      ],
       oper: "立即添加",
       imageUrl: "",
       form: {
@@ -131,6 +156,13 @@ export default {
             trigger: "change",
           },
         ],
+         phone : [
+          {
+              required: false,
+            validator: checkEmail,
+            trigger: "blur",
+          },
+        ],
       },
     };
   },
@@ -149,7 +181,6 @@ export default {
     uploadFile(res) {
       if (res.code == 1) {
         this.form.logo = res.message;
-       
       } else {
         this.$message.error("图片上传失败");
       }
@@ -158,11 +189,11 @@ export default {
       // this.$refs.upload.submit()
       this.$refs[formName].validate(async (valid) => {
         if (valid) {
-             this.form.userId=this.guid()
-          console.log(this.form)
+          this.form.userId = this.guid();
+          console.log(this.form);
           userregist(this.form)
             .then((response) => {
-               this.$message.success('添加账户成功');
+              this.$message.success("添加账户成功");
             })
             .catch((error) => {
               this.$message.error(error);
@@ -171,7 +202,7 @@ export default {
         }
       });
     },
-      guid() {
+    guid() {
       function S4() {
         return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
       }

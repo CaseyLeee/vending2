@@ -8,22 +8,22 @@
     size="normal"
   >
     <el-form-item label="商品名称" prop="name">
-      <el-input v-model="form.name"></el-input>
+      <el-input v-model="form.name" maxLength="7"></el-input>
     </el-form-item>
 
     <el-form-item label="产品描述" prop="details">
-      <el-input v-model="form.details"></el-input>
+      <el-input v-model="form.details" maxLength="20"></el-input>
     </el-form-item>
 
     <el-form-item label="价格" prop="price">
       <el-input
         v-model.number="form.price"
         type="number"
-        maxLength="9"
+        oninput="if(value.length>7)value=value.slice(0,7)"
       ></el-input>
     </el-form-item>
-    <el-form-item label="单位" prop="unit">
-      <el-input v-model.number="form.unit" maxLength="9"></el-input>
+    <el-form-item label="单位" prop="unit"> 
+      <el-input v-model.number="form.unit" maxLength="3"></el-input>
     </el-form-item>
 
     <el-form-item label="产品图片" prop="file" ref="file">
@@ -93,7 +93,7 @@ export default {
         unit: [
           {
             required: true,
-            message: "请输入商品单位(小时/只/个...)",
+            message: "请输入商品单位(份/小时...)",
             trigger: "blur",
           },
         ],
