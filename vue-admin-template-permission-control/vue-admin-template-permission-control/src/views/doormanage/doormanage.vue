@@ -10,15 +10,15 @@
           :key="con.containerId"
           :class="[
             'circle',
-            item.containerState[con.number] == 0 ? 'need' : '',
+            item.containerState[con.number - 1] == 0 ? 'need' : '',
           ]"
         >
-          <img
+          <el-image
             v-if="con.commodify.pircture"
             :src="getAvator(con.commodify.pircture)"
-            class="avatar"
-            @click="centerDialogVisible = true"
-          />
+            @click="dialogopen(item.deviceId, con.number)"
+            lazy
+          ></el-image>
           <i class="number">{{ con.number }}</i>
         </div>
       </div>
@@ -30,22 +30,31 @@
       center
     >
       <span slot="footer" class="dialog-footer">
-        <el-button @click="centerDialogVisible = false" type="success"
+        <el-button @click="openconfirm()" type="success" size="mini"
           >已补货</el-button
         >
-        <el-button type="primary" @click="centerDialogVisible = false"
-          >开门</el-button
+        <el-button type="primary" @click="deviceopen()" size="mini"
+          >全部开门</el-button
         >
-        <el-button @click="centerDialogVisible = false" type="danger"
+        <el-button type="primary" @click="devicecomand()" size="mini"
+          >开此仓门</el-button
+        >
+        <!-- <el-button @click="centerDialogVisible = false" type="danger"
           >无货</el-button
-        >
+        > -->
       </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { devicelist, querycontainerlist } from "@/api/table";
+import {
+  devicelist,
+  querycontainerlist,
+  deviceopen,
+  openconfirm,
+  devicecomand,
+} from "@/api/table";
 export default {
   data() {
     return {
@@ -60,6 +69,8 @@ export default {
       form2: {
         deviceTypeId: "",
       },
+      deviceId: "",
+      number: "",
     };
   },
   created() {
@@ -67,6 +78,28 @@ export default {
   },
 
   methods: {
+    dialogopen(deviceId, number) {
+      this.centerDialogVisible = true;
+      this.deviceId = deviceId;
+
+      this.number = number;
+    },
+    async deviceopen() {
+      this.centerDialogVisible = false;
+      const res = await deviceopen({ deviceId: this.deviceId });
+    },
+    async openconfirm() {
+      this.centerDialogVisible = false;
+      const res = await openconfirm({ deviceId: this.deviceId });
+    },
+    async devicecomand() {
+      this.centerDialogVisible = false;
+      let array = [0, 0, 0, 0, 0, 0, 0, 0];
+      alert(this.number);
+      array[this.number - 1] = 1;
+      let str = array.toString().replaceAll(",", "");
+      const res = await devicecomand({ deviceId: this.deviceId, command: str });
+    },
     showPopup() {
       this.show = true;
     },
@@ -76,7 +109,7 @@ export default {
 
     async queryList() {
       let devicemap = {};
-      const res = await devicelist(this.form1);
+      const res = await devicelist(this.form1); //先查设备  再查设备类型
       if (res.code == 1) {
         res.data.forEach(async (element) => {
           let type = element.type;
@@ -105,6 +138,23 @@ export default {
 </script>
 
 <style  lang='scss' scoped>
+.el-image{
+  height: 100%;
+}
+.el-dialog__body {
+ padding:0px !important
+}
+.el-dialog__footer {
+  span {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    button {
+      margin: 10px;
+    }
+  }
+}
 @media screen and (max-width: 992px) {
   .contain {
     width: 100%;
@@ -130,7 +180,7 @@ export default {
   justify-content: center;
 }
 .contain {
-  border: solid 2px #409eff;
+  border: solid 6px #409eff;
 
   border-radius: 10px;
   .number {
@@ -156,7 +206,7 @@ export default {
   }
   .circle {
     width: 25%;
-    height: 25%;
+    // height: 25%;
     margin: 10px;
     position: relative;
     img {

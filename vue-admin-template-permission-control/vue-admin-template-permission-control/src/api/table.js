@@ -9,7 +9,7 @@ export function getGoods(data) {
 }
 export function querycontainerlist(params) {
   return request({
-    url: '/backGround/container/list',
+    url: '/public/container/list',
     method: 'get',
     params
   })
@@ -143,6 +143,30 @@ export function  refundadd(params) {
     params
   })
 }
+export function  deviceopen(params) {
+  return request({
+    url: '/foreground/device/open',
+    method: 'get',
+    params
+  })
+}
+export function  openconfirm(params) {
+  return request({
+    url: '/foreground/device/open/confirm',
+    method: 'get',
+    params
+  })
+}
+
+export function  devicecomand(params) {
+  return request({
+    url: '/foreground/device/comand',
+    method: 'get',
+    params
+  })
+}
+
+
 
 
 

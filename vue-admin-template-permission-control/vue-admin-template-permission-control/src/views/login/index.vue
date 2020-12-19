@@ -65,8 +65,6 @@
 </template>
 
 <script>
-import { validUsername } from "@/utils/validate";
-
 export default {
   name: "Login",
   data() {
@@ -126,13 +124,18 @@ export default {
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
           this.loading = true;
-        
+
           this.$store
             .dispatch("user/login", this.loginForm)
             .then(() => {
-           
-              this.$router.push({ path: this.redirect || "/" });
-              this.loading = false;
+            
+              if (this.$route.query.item == "door") {
+                this.$router.push({ path: '/door'});
+                this.loading = false;
+              } else {
+                this.$router.push({ path: this.redirect || "/" });
+                this.loading = false;
+              }
             })
             .catch(() => {
               this.loading = false;
@@ -168,7 +171,7 @@ export default {
   }
 
   .el-form-item {
-    border: 1px solid #CCCCCC;
+    border: 1px solid #cccccc;
 
     border-radius: 5px;
     color: #454545;
@@ -219,7 +222,7 @@ export default {
 
     .title {
       font-size: 26px;
-      color: #3A71EF;
+      color: #3a71ef;
       margin: 0px auto 40px auto;
       text-align: center;
       font-weight: bold;

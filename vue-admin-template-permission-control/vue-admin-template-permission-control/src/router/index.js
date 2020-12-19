@@ -60,41 +60,45 @@ export const constantRoutes = [
     // }]
   },
 
+  
+
+  
+  
+]
+
+/**
+ * asyncRoutes
+ * the routes that need to be dynamically loaded based on user roles
+ */
+export const asyncRoutes = [
   {
-    path: '/goodsmanage',
+    path: '/ordermanage',
     component: Layout,
-    redirect: '/goodsmanage/goodslist',
-    name: 'goodsmanage',
-    meta: { title: '商品管理', icon: 'el-icon-s-help' },
+    redirect: '/ordermanage/orderlist',
+    name: 'ordermanage',
+    meta: { title: '订单管理', icon: 'el-icon-s-help' ,roles:['normal']},
     children: [
       {
-        path: 'goodslist',
-        name: 'goodslist',
-        component: () => import('@/views/goodsmanage/goodslist'),
-        meta: { title: '商品列表', icon: 'table' }
+        path: 'orderlist',
+        name: 'orderlist',
+        component: () => import('@/views/ordermanage/orderlist'),
+        meta: { title: '订单列表', icon: 'table' }
       },
       {
-        path: 'goodsadd',
-        name: 'goodsadd',
-        component: () => import('@/views/goodsmanage/goodsadd'),
-        meta: { title: '商品添加', icon: 'table' }
-      },
-      {
-        path: 'goodsedit',
-        name: 'goodsedit',
-        component: () => import('@/views/goodsmanage/goodsadd'),
-        meta: { title: '商品编辑', icon: 'table' },
-        hidden: true
+        path: 'queryrefund',
+        name: 'queryrefund',
+        component: () => import('@/views/ordermanage/queryrefund'),
+        meta: { title: '退款查询', icon: 'table' }
       }
+     
     ]
   },
-
   {
     path: '/countermanage',
     component: Layout,
     redirect: '/countermanage/counterlist',
     name: 'countermanage',
-    meta: { title: '货柜管理', icon: 'el-icon-s-help' },
+    meta: { title: '货柜管理', icon: 'el-icon-s-help' ,roles:['admin'] },
     children: [
       {
         path: 'counterlist',
@@ -122,7 +126,7 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/tenantsmanage/tenantslist',
     name: 'tenantsmanage',
-    meta: { title: '账户管理', icon: 'el-icon-s-help' },
+    meta: { title: '账户管理', icon: 'el-icon-s-help' ,roles:['admin'] },
     children: [
       {
         path: 'tenantslist',
@@ -150,7 +154,7 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/rootmanage/rootbind',
     name: 'rootmanege',
-    meta: { title: '设备管理', icon: 'el-icon-s-help' },
+    meta: { title: '设备管理', icon: 'el-icon-s-help' ,roles:['admin'] },
     children: [
       {
         path: 'rootbind',
@@ -174,34 +178,33 @@ export const constantRoutes = [
     ]
   },
   {
-    path: '/ordermanage',
+    path: '/goodsmanage',
     component: Layout,
-    redirect: '/ordermanage/orderlist',
-    name: 'ordermanage',
-    meta: { title: '订单管理', icon: 'el-icon-s-help' },
+    redirect: '/goodsmanage/goodslist',
+    name: 'goodsmanage',
+    meta: { title: '商品管理', icon: 'el-icon-s-help' ,roles:['admin']},
     children: [
       {
-        path: 'orderlist',
-        name: 'orderlist',
-        component: () => import('@/views/ordermanage/orderlist'),
-        meta: { title: '订单列表', icon: 'table' }
+        path: 'goodslist',
+        name: 'goodslist',
+        component: () => import('@/views/goodsmanage/goodslist'),
+        meta: { title: '商品列表', icon: 'table' }
       },
       {
-        path: 'queryrefund',
-        name: 'queryrefund',
-        component: () => import('@/views/ordermanage/queryrefund'),
-        meta: { title: '退款查询', icon: 'table' }
+        path: 'goodsadd',
+        name: 'goodsadd',
+        component: () => import('@/views/goodsmanage/goodsadd'),
+        meta: { title: '商品添加', icon: 'table' }
+      },
+      {
+        path: 'goodsedit',
+        name: 'goodsedit',
+        component: () => import('@/views/goodsmanage/goodsadd'),
+        meta: { title: '商品编辑', icon: 'table' },
+        hidden: true
       }
-     
     ]
   },
-]
-
-/**
- * asyncRoutes
- * the routes that need to be dynamically loaded based on user roles
- */
-export const asyncRoutes = [
   // {
   //   path: '/nested',
   //   component: Layout,

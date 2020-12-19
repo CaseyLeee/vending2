@@ -18,7 +18,7 @@
     </el-select>
 
     <div class="chequer">
-      <div class="chequeritem" @click="to(7)">
+      <div class="chequeritem" @click="to(7,containerlistfixed7.containerId)">
         <div>固定</div>
         <img
           v-if="containerlistfixed7.commodifyId"
@@ -29,12 +29,12 @@
         <div class="words" v-if="containerlistfixed7.commodifyId">
           <span>{{ containerlistfixed7.commodify.name }}</span>
           <span
-            >{{ containerlistfixed7.commodify.price
+            >{{ containerlistfixed7.commodify.price/100
             }}/{{ containerlistfixed7.commodify.unit }}</span
           >
         </div>
       </div>
-      <div class="chequeritem" @click="to(8)">
+      <div class="chequeritem" @click="to(8,containerlistfixed8.containerId)">
         <div>固定</div>
         <img
           v-if="containerlistfixed8.commodifyId"
@@ -45,7 +45,7 @@
         <div class="words" v-if="containerlistfixed8.commodifyId">
           <span>{{ containerlistfixed8.commodify.name }}</span>
           <span
-            >{{ containerlistfixed8.commodify.price
+            >{{ containerlistfixed8.commodify.price/100
             }}/{{ containerlistfixed8.commodify.unit }}</span
           >
         </div>
@@ -63,7 +63,7 @@
         <img :src="getAvator(item.commodify.pircture)" alt="" />
         <div>
           <span>{{ item.commodify.name }}</span>
-          <span>{{ item.commodify.price }}/{{ item.commodify.unit }}</span>
+          <span>{{ item.commodify.price/100 }}/{{ item.commodify.unit }}</span>
         </div>
       </div>
       <div class="chequeritem add" @click="to()">
@@ -111,7 +111,10 @@ export default {
       this.containerlistnofix = [];
       this.queryList(val);
     },
-    to(number) {
+    to(number,containerId) {
+      if(number==7||number==8){
+           this.deletecon(containerId)
+      }
       this.$router.push({
         name: "goodslist",
         path: "/goodsmanage/goodslist",

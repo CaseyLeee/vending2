@@ -10,7 +10,10 @@
       style="width: 100%"
     >
       <el-table-column label="商品名称" prop="name"> </el-table-column>
-      <el-table-column label="价格" prop="price"> </el-table-column>
+      <el-table-column label="价格" prop="price">
+        <template slot-scope="scope">
+         {{scope.row.price/100}} </template
+      ></el-table-column>
       <el-table-column label="图片">
         <!-- eslint-disable-next-line -->
         <template slot-scope="scope">
@@ -39,10 +42,7 @@
         </template>
 
         <template slot-scope="scope">
-          <el-button size="mini" @click="edit(scope.row)"
-            >编辑</el-button
-          >
-         
+          <el-button size="mini" @click="edit(scope.row)">编辑</el-button>
         </template>
       </el-table-column>
       <el-table-column align="center" fixed="right" width="200" key="2" v-else>
@@ -86,7 +86,7 @@ export default {
       search: "",
       bind: false,
       goodslist: [],
-    
+
       form: {
         pageNum: 1,
         pageSize: 20,
@@ -138,16 +138,14 @@ export default {
         },
       });
     },
-  
+
     queryList() {
       getGoods(this.form)
         .then((response) => {
           this.goodslist = response.data;
           this.pager.total = response.totalNum;
         })
-        .catch((err) => {
-          
-        });
+        .catch((err) => {});
     },
     bindfun(id) {
       this.formpost.containerId = this.guid();
@@ -169,7 +167,7 @@ export default {
         .catch((err) => {
           this.$message({
             type: "success",
-            message: "绑定失败" ,
+            message: "绑定失败",
           });
         });
     },

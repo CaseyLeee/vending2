@@ -6,6 +6,14 @@
 
 <script>
 export default {
-  name: 'App'
-}
+  name: "App",
+};
 </script>
+
+<style  lang='scss' >
+.conbody {
+  .el-dialog__body {
+    padding: 0px !important;
+  }
+}
+</style>

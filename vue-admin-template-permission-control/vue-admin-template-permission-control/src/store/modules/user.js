@@ -43,7 +43,9 @@ const actions = {
       login(formData).then(response => {
         const { data,message } = response
         commit('SET_TOKEN', message)
-        commit('SET_NAME', username)
+       
+        commit('SET_ROLES', data.type)
+        commit('SET_NAME', data.name)
         setToken(message)
      
         resolve()
@@ -70,7 +72,17 @@ const actions = {
         // if (!roles || roles.length <= 0) {
         //   reject('getInfo: roles must be a non-null array!')
         // }
-        let roles=['admin']
+        let roles=[]
+      
+        if(state.roles=="1"){
+         
+          roles.push("admin")
+         
+        }
+        else{
+          roles.push("normal")
+        }
+       
         commit('SET_ROLES', roles)
         // commit('SET_NAME', name)
         // commit('SET_AVATAR', avatar)

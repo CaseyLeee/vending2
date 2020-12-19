@@ -17,12 +17,12 @@
 
     <el-form-item label="价格" prop="price">
       <el-input
-        v-model.number="form.price"
+        v-model.number="form.priceyuan"
         type="number"
         oninput="if(value.length>7)value=value.slice(0,7)"
       ></el-input>
     </el-form-item>
-    <el-form-item label="单位" prop="unit"> 
+    <el-form-item label="单位" prop="unit">
       <el-input v-model.number="form.unit" maxLength="3"></el-input>
     </el-form-item>
 
@@ -83,7 +83,7 @@ export default {
             trigger: "blur",
           },
         ],
-        price: [
+        priceyuan: [
           {
             required: true,
             message: "请输入价格",
@@ -117,12 +117,15 @@ export default {
     let row = this.$route.params.row;
     if (row != undefined) {
       this.oper = "立即修改";
-        this.form= Object.assign({}, this.form, row);
+      row.priceyuan=row.price/100;
+      this.form = Object.assign({}, this.form, row);
+      
     }
-  
+
     //通过id获取商品参数
     console.log("row", row);
   },
+  
   methods: {
     getAvator(picturePath) {
       return `${process.env.VUE_APP_PIC_API}/${picturePath}`;
@@ -139,8 +142,8 @@ export default {
     async onSubmit(formName) {
       this.$refs[formName].validate(async (valid) => {
         if (valid) {
-        
           if (this.oper == "立即修改") {
+            this.form.price=this.form.priceyuan*100
             commodifyupdate(this.form)
               .then((response) => {
                 this.$message.success("修改商品成功");
@@ -150,6 +153,7 @@ export default {
               });
           } else {
             this.form.commodifyId = this.guid();
+             this.form.price=this.form.priceyuan*100
             addGoods(this.form)
               .then((response) => {
                 this.$message.success("添加商品成功");
