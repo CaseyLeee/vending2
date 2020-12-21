@@ -1,4 +1,4 @@
-import { login, logout, getInfo } from '@/api/user'
+import { login, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
@@ -37,17 +37,19 @@ const actions = {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
       let formData = new FormData()
-      formData.append('account',  username.trim())
-      formData.append('password',  password)
+      formData.append('account', username.trim())
+      formData.append('password', password)
 
       login(formData).then(response => {
-        const { data,message } = response
+        const { data, message } = response
         commit('SET_TOKEN', message)
-       
+
         commit('SET_ROLES', data.type)
         commit('SET_NAME', data.name)
         setToken(message)
-     
+        setRoles(data.type)
+        setName(data.name)
+
         resolve()
       }).catch(error => {
         reject(error)
@@ -59,34 +61,34 @@ const actions = {
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
       // getInfo(state.token).then(response => {
-      
-        // const { data } = response
 
-        // if (!data) {
-        //   reject('Verification failed, please Login again.')
-        // }
+      // const { data } = response
 
-        // const { roles, name, avatar } = data
+      // if (!data) {
+      //   reject('Verification failed, please Login again.')
+      // }
 
-        // roles must be a non-empty array
-        // if (!roles || roles.length <= 0) {
-        //   reject('getInfo: roles must be a non-null array!')
-        // }
-        let roles=[]
-      
-        if(state.roles=="1"){
-         
-          roles.push("admin")
-         
-        }
-        else{
-          roles.push("normal")
-        }
-       
-        commit('SET_ROLES', roles)
-        // commit('SET_NAME', name)
-        // commit('SET_AVATAR', avatar)
-        resolve({"roles":roles})
+      // const { roles, name, avatar } = data
+
+      // roles must be a non-empty array
+      // if (!roles || roles.length <= 0) {
+      //   reject('getInfo: roles must be a non-null array!')
+      // }
+      let roles = []
+
+      if (state.roles == "1") {
+
+        roles.push("admin")
+
+      }
+      else if (state.roles == "0"){
+        roles.push("normal")
+      }
+
+      commit('SET_ROLES', roles)
+      // commit('SET_NAME', name)
+      // commit('SET_AVATAR', avatar)
+      resolve({ "roles": roles })
       // }).catch(error => {
       //   reject(error)
       // })
@@ -97,13 +99,26 @@ const actions = {
   logout({ commit, state }) {
     return new Promise((resolve, reject) => {
       // logout(state.token).then(() => {
-        removeToken() // must remove  token  first
-        resetRouter()
-        commit('RESET_STATE')
-        resolve()
+      // removeToken() // must remove  token  first
+      // resetRouter()
+      // commit('RESET_STATE')
+
+      // resolve()
       // }).catch(error => {
       //   reject(error)
       // })
+
+      const promise = Promise.resolve()
+      promise.then(() => {
+        removeToken() // must remove  token  first
+        resetRouter()
+        commit('RESET_STATE')
+
+        resolve()
+      })
+
+      return promise
+
     })
   },
 
@@ -112,6 +127,7 @@ const actions = {
     return new Promise(resolve => {
       removeToken() // must remove  token  first
       commit('RESET_STATE')
+
       resolve()
     })
   }

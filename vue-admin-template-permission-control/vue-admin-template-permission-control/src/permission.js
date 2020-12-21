@@ -19,7 +19,8 @@ router.beforeEach(async(to, from, next) => {
 
   // determine whether the user has logged in
   const hasToken = getToken()
-
+  const hasRoles = getRoles()
+alert(hasRoles)
   if (hasToken) {
     
     if (to.path === '/login') {
@@ -30,8 +31,8 @@ router.beforeEach(async(to, from, next) => {
     } else {
     
       // determine whether the user has obtained his permission roles through getInfo
-       const hasRoles = store.getters.roles && store.getters.roles.length > 0 //LOADING
-    
+      //  const hasRoles = store.getters.roles && store.getters.roles.length > 0 //LOADING
+      
       if (hasRoles) {
         next()
       } else {
