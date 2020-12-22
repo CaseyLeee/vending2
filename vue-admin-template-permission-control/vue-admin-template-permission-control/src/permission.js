@@ -3,7 +3,7 @@ import store from './store'
 import { Message } from 'element-ui'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
-import { getToken } from '@/utils/auth' // get token from cookie
+import { getToken ,getRoles} from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/get-page-title'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
@@ -19,8 +19,9 @@ router.beforeEach(async(to, from, next) => {
 
   // determine whether the user has logged in
   const hasToken = getToken()
-  const hasRoles = getRoles()
-alert(hasRoles)
+  const getRole = getRoles()
+console.log("hasToken",hasToken)
+console.log("getRoles",getRole)
   if (hasToken) {
     
     if (to.path === '/login') {
@@ -31,7 +32,7 @@ alert(hasRoles)
     } else {
     
       // determine whether the user has obtained his permission roles through getInfo
-      //  const hasRoles = store.getters.roles && store.getters.roles.length > 0 //LOADING
+       const hasRoles = store.getters.roles && store.getters.roles.length > 0 //LOADING
       
       if (hasRoles) {
         next()

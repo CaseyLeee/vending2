@@ -109,29 +109,32 @@ export default {
 
     async queryList() {
       let devicemap = {};
+     
       const res = await devicelist(this.form1); //先查设备  再查设备类型
+    
       if (res.code == 1) {
         res.data.forEach(async (element) => {
           let type = element.type;
+          console.log(element)
           if (devicemap[type] == undefined) {
             this.form2.deviceTypeId = type;
             const res = await querycontainerlist(this.form2);
+              
             if (res.code == 1) {
               devicemap[type] = res.data;
               element.containerlist = devicemap[type];
+              
             }
           } else {
             element.containerlist = devicemap[type];
           }
-          if (element.containerState.indexOf("0") != -1) {
+          
             this.listreplen.push(element);
-          } else {
-            this.listnoreplen.push(element);
-          }
+          
         });
       }
 
-      console.log(res);
+      
     },
   },
 };

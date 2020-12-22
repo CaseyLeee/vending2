@@ -1,5 +1,5 @@
 import { login, getInfo } from '@/api/user'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { getToken, setToken, removeToken,setRoles,setName,getRoles } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
 const getDefaultState = () => {
@@ -46,6 +46,7 @@ const actions = {
 
         commit('SET_ROLES', data.type)
         commit('SET_NAME', data.name)
+        
         setToken(message)
         setRoles(data.type)
         setName(data.name)
@@ -75,13 +76,14 @@ const actions = {
       //   reject('getInfo: roles must be a non-null array!')
       // }
       let roles = []
-
-      if (state.roles == "1") {
+      const hasRoles = getRoles()
+   
+      if (hasRoles == "1") {
 
         roles.push("admin")
 
       }
-      else if (state.roles == "0"){
+      else if (hasRoles == "0"){
         roles.push("normal")
       }
 

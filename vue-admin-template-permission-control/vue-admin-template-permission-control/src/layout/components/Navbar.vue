@@ -8,7 +8,7 @@
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <!-- <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar"> -->
-          <i class="el-icon-user"></i><span>{{name}}</span>
+          <i class="el-icon-user"></i><span>{{getName}}</span>
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
@@ -36,13 +36,14 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
-
+import { getName} from '@/utils/auth'
 export default {
   components: {
     Breadcrumb,
     Hamburger
   },
   computed: {
+    getName,
     ...mapGetters([
       'sidebar',
       'avatar',
@@ -55,9 +56,11 @@ export default {
     },
     async logout() {
        await this.$store.dispatch('user/logout')
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+      //  this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+      this.$router.push(`/login`)
     }
-  }
+  },
+ 
 }
 </script>
 
