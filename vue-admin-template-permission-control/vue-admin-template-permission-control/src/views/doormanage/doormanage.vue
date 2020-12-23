@@ -5,7 +5,7 @@
       <div class="circlecon">
         <div
           v-for="con in item.containerlist.filter(function (data) {
-            return data.number != 7 && data.number != 8;
+            return data.number !=1 && data.number !=2;
           })"
           :key="con.containerId"
           :class="[
@@ -87,18 +87,38 @@ export default {
     async deviceopen() {
       this.centerDialogVisible = false;
       const res = await deviceopen({ deviceId: this.deviceId });
+      if(res.code==1){
+           this.$message.success("开门成功");
+      }
+      else{
+        this.$message.success(res.message);
+      }
     },
     async openconfirm() {
       this.centerDialogVisible = false;
       const res = await openconfirm({ deviceId: this.deviceId });
+      this.centerDialogVisible = false;
+       if(res.code==1){
+           this.$message.success("全部补货成功");
+      }
+      else{
+        this.$message.success(res.message);
+      }
     },
     async devicecomand() {
+      // this.centerDialogVisible = false;
+      // let array = [0, 0, 0, 0, 0, 0, 0, 0];
+      // alert(this.number);
+      // array[this.number - 1] = 1;
+      // let str = array.toString().replaceAll(",", "");
       this.centerDialogVisible = false;
-      let array = [0, 0, 0, 0, 0, 0, 0, 0];
-      alert(this.number);
-      array[this.number - 1] = 1;
-      let str = array.toString().replaceAll(",", "");
-      const res = await devicecomand({ deviceId: this.deviceId, command: str });
+      const res = await devicecomand({ deviceId: this.deviceId, number:this.number });
+       if(res.code==1){
+           this.$message.success("开此仓门成功");
+      }
+      else{
+        this.$message.success(res.message);
+      }
     },
     showPopup() {
       this.show = true;

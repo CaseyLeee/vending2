@@ -18,35 +18,37 @@
     </el-select>
 
     <div class="chequer">
-      <div class="chequeritem" @click="to(7,containerlistfixed7.containerId)">
+      <div class="chequeritem" @click="to(1, containerlistfixed1.containerId)">
         <div>固定</div>
         <img
-          v-if="containerlistfixed7.commodifyId"
-          :src="getAvator(containerlistfixed7.commodify.pircture)"
+          v-if="containerlistfixed1.commodifyId"
+          :src="getAvator(containerlistfixed1.commodify.pircture)"
           alt=""
         />
         <i v-else class="el-icon-plus avatar-uploader-icon upload"></i>
-        <div class="words" v-if="containerlistfixed7.commodifyId">
-          <span>{{ containerlistfixed7.commodify.name }}</span>
+        <div class="words" v-if="containerlistfixed1.commodifyId">
+          <span>{{ containerlistfixed1.commodify.name }}</span>
           <span
-            >{{ containerlistfixed7.commodify.price/100
-            }}/{{ containerlistfixed7.commodify.unit }}</span
+            >{{ containerlistfixed1.commodify.price / 100 }}/{{
+              containerlistfixed1.commodify.unit
+            }}</span
           >
         </div>
       </div>
-      <div class="chequeritem" @click="to(8,containerlistfixed8.containerId)">
+      <div class="chequeritem" @click="to(2, containerlistfixed2.containerId)">
         <div>固定</div>
         <img
-          v-if="containerlistfixed8.commodifyId"
-          :src="getAvator(containerlistfixed8.commodify.pircture)"
+          v-if="containerlistfixed2.commodifyId"
+          :src="getAvator(containerlistfixed2.commodify.pircture)"
           alt=""
         />
         <i v-else class="el-icon-plus avatar-uploader-icon upload"></i>
-        <div class="words" v-if="containerlistfixed8.commodifyId">
-          <span>{{ containerlistfixed8.commodify.name }}</span>
+        <div class="words" v-if="containerlistfixed2.commodifyId">
+          <span>{{ containerlistfixed2.commodify.name }}</span>
           <span
-            >{{ containerlistfixed8.commodify.price/100
-            }}/{{ containerlistfixed8.commodify.unit }}</span
+            >{{ containerlistfixed2.commodify.price / 100 }}/{{
+              containerlistfixed2.commodify.unit
+            }}</span
           >
         </div>
       </div>
@@ -63,7 +65,9 @@
         <img :src="getAvator(item.commodify.pircture)" alt="" />
         <div>
           <span>{{ item.commodify.name }}</span>
-          <span>{{ item.commodify.price/100 }}/{{ item.commodify.unit }}</span>
+          <span
+            >{{ item.commodify.price / 100 }}/{{ item.commodify.unit }}</span
+          >
         </div>
       </div>
       <div class="chequeritem add" @click="to()">
@@ -82,10 +86,9 @@ import {
 export default {
   data() {
     return {
-     
       containerlist: [],
-      containerlistfixed7: {},
-      containerlistfixed8: {},
+      containerlistfixed1: {},
+      containerlistfixed2: {},
       containerlistnofix: [],
       deviceTypeId: "",
       deviceTypelist: [],
@@ -106,21 +109,24 @@ export default {
     },
     change(val) {
       console.log(val);
-      this.containerlistfixed7 = {};
-      this.containerlistfixed8 = {};
+      this.containerlistfixed1 = {};
+      this.containerlistfixed2 = {};
       this.containerlistnofix = [];
       this.queryList(val);
     },
-    to(number,containerId) {
-      if(number==7||number==8){
-           this.deletecon(containerId)
+    to(number, containerId) {
+      if (containerId) {
+        if (number == 1 || number == 2) {
+          this.deletecon(containerId);
+        }
       }
+
       this.$router.push({
         name: "goodslist",
         path: "/goodsmanage/goodslist",
         params: {
           typeId: this.deviceTypeId,
-          number: number ? number : this.containerlistnofix.length + 1,
+          number: number ? number : this.containerlistnofix.length + 1 + 2, //因为固定有2 所以从3开始
         },
       });
     },
@@ -140,17 +146,17 @@ export default {
         .then((response) => {
           this.containerlist = response.data;
 
-          let arr = this.containerlist.filter((data) => data.number == 7);
+          let arr = this.containerlist.filter((data) => data.number == 1);
           if (arr.length > 0) {
-            this.containerlistfixed7 = arr[0];
+            this.containerlistfixed1 = arr[0];
           }
-          arr = this.containerlist.filter((data) => data.number ==8);
+          arr = this.containerlist.filter((data) => data.number == 2);
           if (arr.length > 0) {
-            this.containerlistfixed8 = arr[0];
+            this.containerlistfixed2 = arr[0];
           }
 
           this.containerlistnofix = this.containerlist.filter(
-            (data) => data.number !=7 && data.number != 8
+            (data) => data.number != 1 && data.number != 2
           );
         })
         .catch((err) => {});

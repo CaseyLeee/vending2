@@ -121,11 +121,11 @@ export function  refund(data) {
     data
   })
 }
-export function  refundquery(data) {
+export function  refundquery(params) {
   return request({
     url: '/foreground/refund/query',
-    method: 'post',
-    data
+    method: 'get',
+    params
   })
 }
 export function  orderquery(data) {
