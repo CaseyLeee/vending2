@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="containbd">
     <el-form
       :model="form"
       ref="form"
@@ -18,16 +18,17 @@
       <el-form-item label="备注">
         <el-input v-model="form.remrak"></el-input>
       </el-form-item>
-      <el-form-item label="归属账号(userid)">
-        <el-input v-model="form.userId"></el-input>
-        <!-- <el-button type="text" @click="dialogTableVisible = true"
+      <el-form-item label="归属账号">
+        <!-- <el-input v-model="form.userId"></el-input> -->
+        <span class="el-input__inner">{{ name }}</span>
+        <el-button type="text" @click="dialogTableVisible = true"
           >选择账号</el-button
-        > -->
+        >
       </el-form-item>
       <el-form-item label="二维地理位置" v-if="oper == '立即添加'">
         <el-input v-model="form.position"></el-input>
       </el-form-item>
-      <el-form-item label="货柜类型" prop="type" >
+      <el-form-item label="货柜类型" prop="type">
         <el-select v-model="form.type" placeholder="请选择">
           <el-option
             v-for="item in deviceTypelist"
@@ -43,7 +44,14 @@
         v-if="oper == '立即添加'"
         prop="containerState"
       >
-        <el-input v-model="form.containerState"></el-input>
+        <!-- <el-input v-model="form.containerState"></el-input> -->
+        <div class="containerState">
+
+          <span class="containerStateitem" v-for="(item,index) in 8" :key="index" @click="containerState(item)">
+
+          </span>
+          
+        </div>
       </el-form-item>
 
       <el-form-item>
@@ -53,7 +61,7 @@
       </el-form-item>
     </el-form>
 
-    <el-dialog title="账号" :visible.sync="dialogTableVisible">
+    <el-dialog title="账号" :visible.sync="dialogTableVisible" center>
       <el-table
         :data="
           userlist.filter(
@@ -69,7 +77,7 @@
         <el-table-column label="账号" prop="account"> </el-table-column>
 
         <el-table-column label="绑定邮箱" prop="phone"> </el-table-column>
-       
+
         <el-table-column align="center" fixed="right" width="200">
           <!-- eslint-disable-next-line -->
           <template slot="header" slot-scope="scope">
@@ -81,8 +89,11 @@
             />
           </template>
           <template slot-scope="scope">
-            <el-button size="mini" type="danger" @click="del(scope.row.userId)"
-              >删除</el-button
+            <el-button
+              size="mini"
+              type="primary"
+              @click="chooseuserid(scope.row.userId, scope.row.name)"
+              >选择</el-button
             >
           </template>
         </el-table-column>
@@ -101,6 +112,7 @@ import {
 export default {
   data() {
     return {
+      name: "",
       search: "",
       userlist: [],
       dialogTableVisible: false,
@@ -151,12 +163,13 @@ export default {
     };
   },
   mounted() {
+    
     deviceTypelist()
       .then((response) => {
         this.deviceTypelist = response.data;
       })
       .catch((err) => {});
-    this.queryList()
+    this.queryList();
     let row = this.$route.params.row;
     if (row != undefined) {
       this.oper = "立即修改";
@@ -164,6 +177,14 @@ export default {
     }
   },
   methods: {
+    containerState(item){
+      
+    },
+    chooseuserid(userid, name) {
+      this.dialogTableVisible = false;
+      this.form.userId = userid;
+      this.name = name;
+    },
     queryList() {
       userquery({})
         .then((response) => {
@@ -203,6 +224,25 @@ export default {
 </script>
 
 <style>
+.containerState{
+      display: flex;
+    flex-wrap: wrap;
+    width: 200px;
+    height: 100px;
+    box-sizing: border-box;
+    
+}
+.containerStateitem{
+          background: #909399;
+    width: 25%;
+    height: 50%;
+    display: inline-block;
+    border-radius: 50%;
+    }
+.containbd {
+  width: 50%;
+  margin-left: 25%;
+}
 .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
   border-radius: 6px;

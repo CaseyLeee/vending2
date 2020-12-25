@@ -129,13 +129,13 @@ export default {
             .dispatch("user/login", this.loginForm)
             .then(() => {
             
-              if (this.$route.query.item == "door") {
-                this.$router.push({ path: '/door'});
-                this.loading = false;
-              } else {
+              // if (this.$route.query.item == "door") {
+              //   this.$router.push({ path: '/door'});
+              //   this.loading = false;
+              // } else {
                 this.$router.push({ path: this.redirect || "/" });
                 this.loading = false;
-              }
+              // }
             })
             .catch(() => {
               this.loading = false;

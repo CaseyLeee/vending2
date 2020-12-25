@@ -1,5 +1,6 @@
 <template>
-  <el-form
+<div class="containbd">
+<el-form
     :model="form"
     ref="form"
     :rules="rules"
@@ -21,6 +22,8 @@
       <el-button type="primary" @click="onSubmit('form')">{{ oper }}</el-button>
     </el-form-item>
   </el-form>
+</div>
+  
 </template>
 
 <script>
@@ -79,5 +82,8 @@ export default {
 </script>
 
 <style>
-
+.containbd {
+  width: 50%;
+  margin-left: 25%;
+}
 </style>

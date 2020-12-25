@@ -1,53 +1,57 @@
 <template>
-  <el-form
-    :model="form"
-    ref="form"
-    :rules="rules"
-    label-width="80px"
-    :inline="false"
-    size="normal"
-  >
-    <el-form-item label="商品名称" prop="name">
-      <el-input v-model="form.name" maxLength="7"></el-input>
-    </el-form-item>
+  <div class="containbd">
+    <el-form
+      :model="form"
+      ref="form"
+      :rules="rules"
+      label-width="80px"
+      :inline="false"
+      size="normal"
+    >
+      <el-form-item label="商品名称" prop="name">
+        <el-input v-model="form.name" maxLength="7"></el-input>
+      </el-form-item>
 
-    <el-form-item label="产品描述" prop="details">
-      <el-input v-model="form.details" maxLength="20"></el-input>
-    </el-form-item>
+      <el-form-item label="产品描述" prop="details">
+        <el-input v-model="form.details" maxLength="20"></el-input>
+      </el-form-item>
 
-    <el-form-item label="价格" prop="price">
-      <el-input
-        v-model.number="form.priceyuan"
-        type="number"
-        oninput="if(value.length>7)value=value.slice(0,7)"
-      ></el-input>
-    </el-form-item>
-    <el-form-item label="单位" prop="unit">
-      <el-input v-model.number="form.unit" maxLength="3"></el-input>
-    </el-form-item>
+      <el-form-item label="价格" prop="price">
+        <el-input
+          v-model.number="form.priceyuan"
+          type="number"
+          oninput="if(value.length>7)value=value.slice(0,7)"
+        ></el-input>
+      </el-form-item>
+      <el-form-item label="单位" prop="unit">
+        <el-input v-model.number="form.unit" maxLength="3"></el-input>
+      </el-form-item>
 
-    <el-form-item label="产品图片" prop="file" ref="file">
-      <el-upload
-        class="avatar-uploader"
-        :action="uploadurl"
-        :show-file-list="false"
-        :limit="1"
-        drag
-        accept=".png,.jpg"
-        :on-success="uploadFile"
-      >
-        <img
-          v-if="form.pircture"
-          :src="getAvator(form.pircture)"
-          class="avatar"
-        />
-        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-      </el-upload>
-    </el-form-item>
-    <el-form-item>
-      <el-button type="primary" @click="onSubmit('form')">{{ oper }}</el-button>
-    </el-form-item>
-  </el-form>
+      <el-form-item label="产品图片" prop="file" ref="file">
+        <el-upload
+          class="avatar-uploader"
+          :action="uploadurl"
+          :show-file-list="false"
+          :limit="1"
+          drag
+          accept=".png,.jpg"
+          :on-success="uploadFile"
+        >
+          <img
+            v-if="form.pircture"
+            :src="getAvator(form.pircture)"
+            class="avatar"
+          />
+          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+        </el-upload>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="onSubmit('form')">{{
+          oper
+        }}</el-button>
+      </el-form-item>
+    </el-form>
+  </div>
 </template>
 
 <script>
@@ -117,15 +121,14 @@ export default {
     let row = this.$route.params.row;
     if (row != undefined) {
       this.oper = "立即修改";
-      row.priceyuan=row.price/100;
+      row.priceyuan = row.price / 100;
       this.form = Object.assign({}, this.form, row);
-      
     }
 
     //通过id获取商品参数
     console.log("row", row);
   },
-  
+
   methods: {
     getAvator(picturePath) {
       return `${process.env.VUE_APP_PIC_API}/${picturePath}`;
@@ -143,7 +146,7 @@ export default {
       this.$refs[formName].validate(async (valid) => {
         if (valid) {
           if (this.oper == "立即修改") {
-            this.form.price=this.form.priceyuan*100
+            this.form.price = this.form.priceyuan * 100;
             commodifyupdate(this.form)
               .then((response) => {
                 this.$message.success("修改商品成功");
@@ -153,7 +156,7 @@ export default {
               });
           } else {
             this.form.commodifyId = this.guid();
-             this.form.price=this.form.priceyuan*100
+            this.form.price = this.form.priceyuan * 100;
             addGoods(this.form)
               .then((response) => {
                 this.$message.success("添加商品成功");
@@ -177,6 +180,10 @@ export default {
 </script>
 
 <style>
+.containbd {
+  width: 50%;
+  margin-left: 25%;
+}
 .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
   border-radius: 6px;
