@@ -18,17 +18,17 @@
       <el-form-item label="备注">
         <el-input v-model="form.remrak"></el-input>
       </el-form-item>
-      <el-form-item label="归属账号">
+      <el-form-item label="归属账号" v-if="type == 1">
         <!-- <el-input v-model="form.userId"></el-input> -->
         <span class="el-input__inner">{{ name }}</span>
         <el-button type="text" @click="dialogTableVisible = true"
           >选择账号</el-button
         >
       </el-form-item>
-      <el-form-item label="二维地理位置" v-if="oper == '立即添加'">
+      <el-form-item label="地址" v-if="oper == '立即添加' && type == 1">
         <el-input v-model="form.position"></el-input>
       </el-form-item>
-      <el-form-item label="货柜类型" prop="type">
+      <el-form-item label="货柜类型" prop="type" v-if="type == 1">
         <el-select v-model="form.type" placeholder="请选择">
           <el-option
             v-for="item in deviceTypelist"
@@ -39,18 +39,19 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item
-        label="设备存货情况"
-        v-if="oper == '立即添加'"
-        prop="containerState"
-      >
+      <el-form-item label="设备存货情况" v-if="type == 1">
         <!-- <el-input v-model="form.containerState"></el-input> -->
         <div class="containerState">
-
-          <span class="containerStateitem" v-for="(item,index) in 8" :key="index" @click="containerState(item)">
-
+          <span
+            :key="index"
+            :ref="item"
+            class="containerStateitem"
+            :style="{ background: arr[index] == 1 ? 'green' : '' }"
+            v-for="(item, index) in 8"
+            @click="containerStatechange(index)"
+          >
+            {{ item }}
           </span>
-          
         </div>
       </el-form-item>
 
@@ -108,10 +109,16 @@ import {
   deviceadd,
   deviceupdate,
   userquery,
+  foredeviceadd,
+  foredeviceupdate,
 } from "@/api/table";
+import { getUserinfo } from "@/utils/auth";
 export default {
   data() {
     return {
+      type: 0,
+      arr: [0, 0, 0, 0, 0, 0, 0, 0],
+      isActive: true,
       name: "",
       search: "",
       userlist: [],
@@ -152,33 +159,40 @@ export default {
             trigger: "change",
           },
         ],
-        containerState: [
-          {
-            required: true,
-            message: "请输入设备存货情况 eg:00000000",
-            trigger: "change",
-          },
-        ],
       },
     };
   },
   mounted() {
-    
-    deviceTypelist()
-      .then((response) => {
-        this.deviceTypelist = response.data;
-      })
-      .catch((err) => {});
+    let { name, userId, type } = JSON.parse(getUserinfo());
+    console.log(JSON.parse(getUserinfo()));
+    this.type = type;
+    if (type == 1) {
+      deviceTypelist()
+        .then((response) => {
+          this.deviceTypelist = response.data;
+        })
+        .catch((err) => {});
+    }
+
     this.queryList();
     let row = this.$route.params.row;
     if (row != undefined) {
       this.oper = "立即修改";
+      this.arr = row.containerState.split("");
+
       this.form = Object.assign({}, this.form, row);
+    } else {
+      this.form.userId = userId;
+      this.name = name;
     }
   },
   methods: {
-    containerState(item){
-      
+    containerStatechange(index) {
+      if (this.arr[index] == 0) {
+        this.arr.splice(index, 1, 1); //不能直接赋值 不会重新渲染
+      } else {
+        this.arr.splice(index, 1, 0); //不能直接赋值 不会重新渲染
+      }
     },
     chooseuserid(userid, name) {
       this.dialogTableVisible = false;
@@ -193,21 +207,39 @@ export default {
         .catch((err) => {});
     },
     onSubmit(formName) {
+      this.form.containerState = this.arr.toString().replaceAll(",", "");
+
       this.$refs[formName].validate(async (valid) => {
         if (valid) {
           if (this.oper != "立即修改") {
             this.form.deviceId = this.guid();
-            deviceadd(this.form)
-              .then((response) => {
-                this.$message.success("添加设备成功");
-              })
-              .catch((err) => {});
+            if (this.type == 1) {
+              deviceadd(this.form)
+                .then((response) => {
+                  this.$message.success("添加设备成功");
+                })
+                .catch((err) => {});
+            } else {
+              foredeviceadd(this.form)
+                .then((response) => {
+                  this.$message.success("添加设备成功");
+                })
+                .catch((err) => {});
+            }
           } else {
-            deviceupdate(this.form)
-              .then((response) => {
-                this.$message.success("修改设备成功");
-              })
-              .catch((err) => {});
+            if (this.type == 1) {
+              deviceupdate(this.form)
+                .then((response) => {
+                  this.$message.success("修改设备成功");
+                })
+                .catch((err) => {});
+            } else {
+              foredeviceupdate(this.form)
+                .then((response) => {
+                  this.$message.success("修改设备成功");
+                })
+                .catch((err) => {});
+            }
           }
         } else {
         }
@@ -224,21 +256,29 @@ export default {
 </script>
 
 <style>
-.containerState{
-      display: flex;
-    flex-wrap: wrap;
-    width: 200px;
-    height: 100px;
-    box-sizing: border-box;
-    
+.active {
+  background: green;
 }
-.containerStateitem{
-          background: #909399;
-    width: 25%;
-    height: 50%;
-    display: inline-block;
-    border-radius: 50%;
-    }
+.containerState {
+  display: flex;
+  flex-wrap: wrap;
+  width: 200px;
+  height: 100px;
+  box-sizing: border-box;
+}
+.containerStateitem {
+  border: 5px solid white;
+  box-sizing: border-box;
+  background: #909399;
+  width: 25%;
+  height: 50%;
+  display: block;
+  border-radius: 50%;
+  text-align: center;
+  color: white;
+  font-size: 12px;
+  font-weight: 800;
+}
 .containbd {
   width: 50%;
   margin-left: 25%;

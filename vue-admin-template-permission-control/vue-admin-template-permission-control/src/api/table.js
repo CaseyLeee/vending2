@@ -166,6 +166,21 @@ export function  devicecomand(params) {
   })
 }
 
+export function  foredeviceadd(data) {
+  return request({
+    url: '/foreground/device/add',
+    method: 'POST',
+    data
+  })
+}
+export function  foredeviceupdate(data) {
+  return request({
+    url: '/foreground/device/update',
+    method: 'POST',
+    data
+  })
+}
+
 
 
 

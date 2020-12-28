@@ -1,5 +1,5 @@
 import { login, getInfo } from '@/api/user'
-import { getToken, setToken, removeToken,setRoles,setName,getRoles } from '@/utils/auth'
+import { getToken, setToken, removeToken,setRoles,setName,getRoles,setUserinfo } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
 const getDefaultState = () => {
@@ -50,6 +50,7 @@ const actions = {
         setToken(message)
         setRoles(data.type)
         setName(data.name)
+        setUserinfo(data)
 
         resolve()
       }).catch(error => {

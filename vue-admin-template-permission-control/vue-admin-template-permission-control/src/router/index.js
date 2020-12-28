@@ -42,11 +42,11 @@ export const constantRoutes = [
     component: () => import('@/views/404'),
     hidden: true
   },
-  {
-    path: '/door',
-    component: () => import('@/views/doormanage/doormanage'),
-    hidden: true
-  },
+  // {
+  //   path: '/door',
+  //   component: () => import('@/views/doormanage/doormanage'),
+  //   hidden: true
+  // },
 
   {
     path: '/',
@@ -94,11 +94,28 @@ export const asyncRoutes = [
     ]
   },
   {
+    
+    path: '/doormange',
+    component: Layout,
+    redirect: '/doormange/door',
+    name: 'doormange',
+    meta: { title: '补货开门管理', icon: 'el-icon-s-help' ,roles:['normal']},
+    children: [
+      {
+        path: 'door',
+        name: 'door',
+        component: () => import('@/views/doormanage/doormanage'),
+        meta: { title: '补货开门管理', icon: 'table' }
+      }
+     
+    ]
+  },
+  {
     path: '/countermanage',
     component: Layout,
     redirect: '/countermanage/counterlist',
     name: 'countermanage',
-    meta: { title: '货柜管理', icon: 'el-icon-s-help' ,roles:['admin'] },
+    meta: { title: '货柜管理', icon: 'el-icon-s-help' ,roles:['admin','normal'] },
     children: [
       {
         path: 'counterlist',
@@ -106,12 +123,12 @@ export const asyncRoutes = [
         component: () => import('@/views/countermanage/counterlist'),
         meta: { title: '货柜列表', icon: 'table' }
       },
-      {
-        path: 'counteradd',
-        name: 'counteradd',
-        component: () => import('@/views/countermanage/counteradd'),
-        meta: { title: '货柜添加', icon: 'table' }
-      },
+      // {
+      //   path: 'counteradd',
+      //   name: 'counteradd',
+      //   component: () => import('@/views/countermanage/counteradd'),
+      //   meta: { title: '货柜添加', icon: 'table' }
+      // },
       {
         path: 'counteredit',
         name: 'counteredit',
