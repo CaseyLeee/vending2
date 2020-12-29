@@ -9,7 +9,7 @@
       "
       style="width: 100%"
     >
-     <el-table-column label="userid" prop="userId"> </el-table-column>
+      <el-table-column label="userid" prop="userId"> </el-table-column>
       <el-table-column label="名称" prop="name"> </el-table-column>
 
       <el-table-column label="账号" prop="account"> </el-table-column>
@@ -39,7 +39,6 @@
           />
         </template>
         <template slot-scope="scope">
-      
           <el-button size="mini" type="danger" @click="del(scope.row.userId)"
             >删除</el-button
           >
@@ -66,7 +65,7 @@ export default {
       search: "",
       bind: false,
       goodslist: [],
-     
+
       form: {
         pageNum: 1,
         pageSize: 20,
@@ -93,12 +92,14 @@ export default {
       return `${process.env.VUE_APP_PIC_API}/${picturePath}`;
     },
     handleSizeChange(val) {
-      alert(val);
+      this.form.pageNum = val;
+      this.queryList();
     },
     handleCurrentChange(val) {
-      alert(val);
+      this.form.pageNum = val;
+      this.queryList();
     },
- 
+
     del(userId) {
       this.$confirm("确定删除此账户吗, 是否继续?", "提示", {
         confirmButtonText: "确定",
@@ -106,13 +107,13 @@ export default {
         type: "warning",
       })
         .then(() => {
-          userdelete(this.$qs.stringify({"userId":userId}))
+          userdelete(this.$qs.stringify({ userId: userId }))
             .then((response) => {
               this.$message({
                 type: "success",
                 message: "删除成功!",
               });
-              this.queryList()
+              this.queryList();
             })
             .catch((err) => {});
         })

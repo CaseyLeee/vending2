@@ -10,20 +10,38 @@
       style="width: 100%"
     >
       <el-table-column label="设备ID" prop="deviceId"> </el-table-column>
-      <el-table-column label="sn号" prop="identifyId">
-      
-      </el-table-column>
+      <el-table-column label="sn号" prop="identifyId"> </el-table-column>
       <el-table-column label="设备名称" prop="name"> </el-table-column>
 
       <el-table-column label="备注" prop="remrak"> </el-table-column>
-      <el-table-column label="归属账号" prop="userId"> 
-          <template slot-scope="scope">
-          <span> {{name }}</span>
+      <el-table-column label="归属账号" prop="userId">
+        <!-- eslint-disable-next-line -->
+        <template slot-scope="scope">
+          <span> {{ scope.row.username }}</span>
         </template>
       </el-table-column>
       <el-table-column label="地址" prop="position"> </el-table-column>
       <el-table-column label="设备类型" prop="type"> </el-table-column>
-      <el-table-column label="设备存货情况" prop="containerState">
+      <el-table-column
+        label="设备存货情况"
+        prop="containerState"
+        width="170"
+        align="center"
+      >
+        <!-- eslint-disable-next-line -->
+        <template slot-scope="scope">
+          <div class="containerState">
+            <span
+              :key="index"
+              :ref="item"
+              class="containerStateitem"
+              :style="{ background: scope.row.arr[index] == 1 ? 'green' : '' }"
+              v-for="(item, index) in scope.row.arr"
+            >
+              {{ item }}
+            </span>
+          </div>
+        </template>
       </el-table-column>
       <el-table-column align="center" fixed="right" width="200">
         <!-- eslint-disable-next-line -->
@@ -58,7 +76,7 @@ import { getUserinfo } from "@/utils/auth";
 export default {
   data() {
     return {
-      userlistmap: [],
+      userlistmap: {},
       type: "",
       search: "",
       bind: false,
@@ -73,12 +91,6 @@ export default {
       pager: {
         total: 0,
         sizes: [20],
-      },
-      formpost: {
-        typeId: "",
-        number: "",
-        commodifyId: "",
-        containerId: "",
       },
     };
   },
@@ -96,10 +108,12 @@ export default {
   },
   methods: {
     handleSizeChange(val) {
-      alert(val);
+      this.form.pageNum = val;
+      this.queryList();
     },
     handleCurrentChange(val) {
-      alert(val);
+      this.form.pageNum = val;
+      this.queryList();
     },
     edit(row) {
       this.$router.push({
@@ -112,24 +126,45 @@ export default {
     },
 
     queryList() {
-      console.log(this.type);
+      let that = this;
       if (this.type == 1) {
         //运维人员
         //usertype不同  走不同的接口
         deviceQuery(this.form)
           .then((response) => {
             this.goodslist = response.data;
-            this.goodslist.map(function(item){
-              item.name=this.userlistmap[item.userId].name
-            })
-            this.pager.total = response.totalNum;
+
+            this.goodslist.map(function (item) {
+              item.username =
+                that.userlistmap[item.userId] != undefined
+                  ? that.userlistmap[item.userId].name
+                  : "";
+              item.arr =
+                item.containerState != undefined
+                  ? item.containerState.split("")
+                  : [];
+            });
+            // this.pager.total = response.totalNum;
+
+            this.$set(this.pager, "total", response.totalNum);
           })
           .catch((err) => {});
       } else {
         devicelist(this.form)
           .then((response) => {
             this.goodslist = response.data;
-            this.pager.total = response.totalNum;
+
+            this.$set(this.pager, "total", response.totalNum);
+            this.goodslist.map(function (item) {
+              item.username =
+                that.userlistmap[item.userId] != undefined
+                  ? that.userlistmap[item.userId].name
+                  : "";
+              item.arr =
+                item.containerState != undefined
+                  ? item.containerState.split("")
+                  : [];
+            });
           })
           .catch((err) => {});
       }
@@ -139,4 +174,24 @@ export default {
 </script>
 
 <style  lang='scss' scoped>
+.containerState {
+  display: flex;
+  flex-wrap: wrap;
+  width: 150px;
+  height: 75px;
+  box-sizing: border-box;
+}
+.containerStateitem {
+  border: 5px solid white;
+  box-sizing: border-box;
+  background: #909399;
+  width: 25%;
+  height: 50%;
+  display: block;
+  border-radius: 50%;
+  text-align: center;
+  color: white;
+  font-size: 12px;
+  font-weight: 800;
+}
 </style>

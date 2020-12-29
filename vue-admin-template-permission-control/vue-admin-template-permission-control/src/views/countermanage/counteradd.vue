@@ -20,7 +20,7 @@
       </el-form-item>
       <el-form-item label="归属账号" v-if="type == 1">
         <!-- <el-input v-model="form.userId"></el-input> -->
-        <span class="el-input__inner">{{ name }}</span>
+        <span class="el-input__inner">{{ form.username }}</span>
         <el-button type="text" @click="dialogTableVisible = true"
           >选择账号</el-button
         >
@@ -164,7 +164,7 @@ export default {
   },
   mounted() {
     let { name, userId, type } = JSON.parse(getUserinfo());
-    console.log(JSON.parse(getUserinfo()));
+   
     this.type = type;
     if (type == 1) {
       deviceTypelist()
@@ -179,11 +179,11 @@ export default {
     if (row != undefined) {
       this.oper = "立即修改";
       this.arr = row.containerState.split("");
-
+      // this.name=row.username
       this.form = Object.assign({}, this.form, row);
     } else {
       this.form.userId = userId;
-      this.name = name;
+      this.form.username = name;
     }
   },
   methods: {

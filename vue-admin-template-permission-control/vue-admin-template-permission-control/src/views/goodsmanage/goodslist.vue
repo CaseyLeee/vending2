@@ -12,8 +12,9 @@
       <el-table-column label="商品名称" prop="name"> </el-table-column>
       <el-table-column label="价格" prop="price">
         <template slot-scope="scope">
-         {{scope.row.price/100}} </template
-      ></el-table-column>
+          {{ scope.row.price / 100 }}
+        </template></el-table-column
+      >
       <el-table-column label="图片">
         <!-- eslint-disable-next-line -->
         <template slot-scope="scope">
@@ -124,10 +125,12 @@ export default {
       return `${process.env.VUE_APP_PIC_API}/${picturePath}`;
     },
     handleSizeChange(val) {
-      alert(val);
+      this.form.pageNum = val;
+      this.queryList();
     },
     handleCurrentChange(val) {
-      alert(val);
+      this.form.pageNum = val;
+      this.queryList();
     },
     edit(row) {
       this.$router.push({

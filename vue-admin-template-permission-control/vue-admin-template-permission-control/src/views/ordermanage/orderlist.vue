@@ -12,17 +12,38 @@
       <el-table-column label="orderId" prop="orderId"> </el-table-column>
       <el-table-column label="商品名称" prop="commodifyName"> </el-table-column>
 
-      <el-table-column label="单价" prop="price"> </el-table-column>
+      <el-table-column label="单价">
+        <template slot-scope="scope"> {{ scope.row.price / 100 }} </template>
+      </el-table-column>
 
       <el-table-column label="数量" prop="number"> </el-table-column>
       <el-table-column label="单位" prop="unit"> </el-table-column>
-      <el-table-column label="总价" prop="totalPrice"> </el-table-column>
+      <el-table-column label="总价">
+        <template slot-scope="scope">
+          {{ scope.row.totalPrice / 100 }}
+        </template>
+      </el-table-column>
       <el-table-column label="消费者id" prop="comumerId"> </el-table-column>
-      <el-table-column label="状态" prop="status"> </el-table-column>
-      <el-table-column label="更新时间" prop="updateTime"> </el-table-column>
-      <el-table-column label="创建时间" prop="createTime"> </el-table-column>
+      <el-table-column label="状态" prop="status">
+        <template slot-scope="scope">
+          {{ scope.row.status | formatStatus }}
+        </template>
+      </el-table-column>
+      <el-table-column label="更新时间" prop="updateTime">
+        <template slot-scope="scope">
+          {{ scope.row.updateTime | formatDate }}
+        </template>
+      </el-table-column>
+      <el-table-column label="创建时间" prop="createTime">
+        <template slot-scope="scope">
+          {{ scope.row.createTime | formatDate }}
+        </template>
+      </el-table-column>
       <el-table-column label="设备id" prop="deviceId"> </el-table-column>
-      <el-table-column label="客户订单状态" prop="tatusCosumer">
+      <el-table-column label="客户订单状态" prop="statusCosumer">
+         <template slot-scope="scope">
+          {{ scope.row.statusCosumer==0?"删除":"正常" }}
+        </template>
       </el-table-column>
 
       <el-table-column align="center" fixed="right" width="200">
@@ -41,6 +62,13 @@
             type="danger"
             @click="refundadd(scope.row.orderId)"
             >退款</el-button
+          >
+           <el-button
+           v-if="scope.row.status==5"
+            size="mini"
+             type="primary"
+            @click="refundquery(scope.row.orderId)"
+            >查询退款</el-button
           >
         </template>
       </el-table-column>
@@ -82,7 +110,7 @@ export default {
       search: "",
       bind: false,
       goodslist: [],
-      
+
       form: {
         pageNum: 1,
         pageSize: 20,
@@ -98,26 +126,69 @@ export default {
       },
     };
   },
+  filters: {
+    formatDate: function (value) {
+      let date = new Date(value);
+      let y = date.getFullYear();
+      let MM = date.getMonth() + 1;
+      MM = MM < 10 ? "0" + MM : MM;
+      let d = date.getDate();
+      d = d < 10 ? "0" + d : d;
+      let h = date.getHours();
+      h = h < 10 ? "0" + h : h;
+      let m = date.getMinutes();
+      m = m < 10 ? "0" + m : m;
+      let s = date.getSeconds();
+      s = s < 10 ? "0" + s : s;
+      return y + "-" + MM + "-" + d + " " + h + ":" + m + ":" + s;
+    },
+    formatStatus: function (value) {
+      return value == 0
+        ? "删除"
+        : value == 1
+        ? "未支付"
+        : value == 2
+        ? "已支付"
+        : value == 3
+        ? "支付异常"
+        : value == 4
+        ? "已撤销"
+        : value == 5
+        ? "退款"
+        : "其他";
+    },
+  },
   created() {
     this.queryList();
   },
   computed: {},
   mounted() {},
   methods: {
-    submit() {
-      this.dialogFormVisible = false;
-      refund(this.formpost)
-        .then((response) => {})
-        .catch((err) => {});
+    // submit() {
+    //   this.dialogFormVisible = false;
+    //   refund(this.formpost)
+    //     .then((response) => {})
+    //     .catch((err) => {});
+    // },
+    refundquery(orderId){
+      this.$router.push({
+        name: "queryrefund",
+        path: "/ordermanage/queryrefund",
+        params: {
+          orderId,
+        },
+      });
     },
     getAvator(picturePath) {
       return `${process.env.VUE_APP_PIC_API}/${picturePath}`;
     },
     handleSizeChange(val) {
-      alert(val);
+    this.form.pageNum=val
+    this.queryList()
     },
     handleCurrentChange(val) {
-      alert(val);
+     this.form.pageNum=val
+    this.queryList()
     },
 
     refundadd(orderId) {
@@ -125,8 +196,13 @@ export default {
       this.dialogFormVisible = true;
     },
     refundsubmit() {
+      let that = this;
+      this.formpost.money = this.formpost.money * 100;
       refundadd(this.formpost)
-        .then((response) => {})
+        .then((response) => {
+          // that.formpost.money=''
+          //   that.formpost.reason=''
+        })
         .catch((err) => {});
     },
     queryList() {
