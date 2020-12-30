@@ -26,7 +26,7 @@
     <el-dialog
       title="请选择操作"
       :visible.sync="centerDialogVisible"
-      width="80%"
+     
       center
     >
       <span slot="footer" class="dialog-footer">

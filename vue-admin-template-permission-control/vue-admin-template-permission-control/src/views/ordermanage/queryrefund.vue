@@ -27,28 +27,46 @@
         size="normal"
       >
         <el-form-item label="退款号">
-          <el-input v-model="data.refundId"></el-input>
+           <span>{{ data.refundId}}</span>
+         
         </el-form-item>
         <el-form-item label="订单号">
-          <el-input v-model="data.orderId"></el-input>
+          <span>{{ data.orderId}}</span>
+         
         </el-form-item>
         <el-form-item label="退款金额">
-          <el-input v-model="data.money"></el-input>
+   <span>{{ data.money/100}}</span>
+         
         </el-form-item>
         <el-form-item label="退款理由">
-          <el-input v-model="data.reason"></el-input>
+          <span>{{ data.reason}}</span>
+      
         </el-form-item>
         <el-form-item label="账号Id">
-          <el-input v-model="data.userId"></el-input>
+            <span>{{ data.userId}}</span>
+         
         </el-form-item>
         <el-form-item label="更新时间">
-          <el-input v-model="data.pdateTime"></el-input>
+           <span>{{ data.pdateTime| formatDate}}</span>
+       
         </el-form-item>
         <el-form-item label="创建时间">
-          <el-input v-model="data.createTime"></el-input>
+          <span>{{ data.createTime | formatDate }}</span>
+       
         </el-form-item>
         <el-form-item label="退款状态">
-          <el-input v-model="data.status"></el-input>
+          <span>{{
+            data.status == 0
+              ? "关闭"
+              : data.status == 1
+              ? "退款中"
+              : data.status == 2
+              ? "成功"
+              : data.status == 3
+              ? "异常"
+              : ""
+          }}</span>
+          
         </el-form-item>
       </el-form>
     </div>
@@ -83,13 +101,14 @@ export default {
       refundquery(this.form)
         .then((response) => {
           this.data = response.data;
-      
+
           if (this.data.refundId) {
             this.flag = true;
           }
-          
         })
-        .catch((err) => {});
+        .catch((err) => {
+          this.data={}
+        });
     },
   },
 };
@@ -105,8 +124,8 @@ export default {
   margin-left: 10%;
   margin-top: 20px;
 }
-.items{
-  .el-input__inner{
+.items {
+  .el-input__inner {
     border: 0 !important;
   }
 }
