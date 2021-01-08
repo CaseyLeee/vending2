@@ -1,7 +1,7 @@
 <template>
   <div class="conbody">
-    <div v-for="item in listreplen" :key="item.deviceId" class="contain">
-      <span>{{ item.name }}</span>
+    <div v-for="item in listreplen" :key="item.deviceId" :class="['contain',item.online?'':'grey']">
+      <span>{{ item.name }}{{item.online?'':'(离线)'}}</span>
       <div class="circlecon">
         <div
           v-for="con in item.containerlist.filter(function (data) {
@@ -161,6 +161,9 @@ export default {
 </script>
 
 <style  lang='scss' scoped>
+.grey{
+  filter:grayscale(100%);
+}
 .el-image{
   height: 100%;
 }

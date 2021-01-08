@@ -178,7 +178,10 @@ export default {
     let row = this.$route.params.row;
     if (row != undefined) {
       this.oper = "立即修改";
-      this.arr = row.containerState.split("");
+      if(row.containerState!=null){
+        this.arr = row.containerState.split("");
+      }
+     
       // this.name=row.username
       this.form = Object.assign({}, this.form, row);
     } else {
@@ -197,7 +200,8 @@ export default {
     chooseuserid(userid, name) {
       this.dialogTableVisible = false;
       this.form.userId = userid;
-      this.name = name;
+      this.form.username = name;
+     
     },
     queryList() {
       userquery({})
