@@ -100,6 +100,14 @@ export default {
         this.deviceTypelist = response.data;
       })
       .catch((err) => {});
+
+      let typeId = this.$route.params.typeId;
+    if (typeId != undefined) {
+     this.deviceTypeId = typeId;
+      this.queryList( this.deviceTypeId);
+    }
+    
+
   },
 
   computed: {},
@@ -126,14 +134,14 @@ export default {
         path: "/goodsmanage/goodslist",
         params: {
           typeId: this.deviceTypeId,
-          number: number ? number : this.containerlistnofix.length + 1 + 2, //因为固定有2 所以从3开始
+          // number: number ? number : this.containerlistnofix.length + 1 + 2, //因为固定有2 所以从3开始
         },
       });
     },
     deletecon(containerId) {
       containerdelete(this.$qs.stringify({ containerId: containerId }))
         .then((response) => {
-          this.queryList();
+          this.queryList(this.deviceTypeId);
           this.$message({
             type: "success",
             message: "删除成功!",

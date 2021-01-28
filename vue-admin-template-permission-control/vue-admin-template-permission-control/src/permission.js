@@ -13,7 +13,7 @@ const whiteList = ['/login'] // no redirect whitelist
 router.beforeEach(async(to, from, next) => {
   // start progress bar
   NProgress.start()
-
+  
   // set page title
   document.title = getPageTitle(to.meta.title)
  
@@ -70,6 +70,7 @@ router.beforeEach(async(to, from, next) => {
       next()
     } else {
       // other pages that do not have permission to access are redirected to the login page.
+     
       next(`/login?redirect=${to.path}`)
       NProgress.done()
     }

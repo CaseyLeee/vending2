@@ -10,7 +10,7 @@
       style="width: 100%"
     >
       <el-table-column label="设备ID" prop="deviceId"> </el-table-column>
-      <el-table-column label="sn号" prop="identifyId"> </el-table-column>
+      <!-- <el-table-column label="sn号" prop="identifyId"> </el-table-column> -->
       <el-table-column label="设备名称" prop="name"> </el-table-column>
 
       <el-table-column label="备注" prop="remrak"> </el-table-column>
@@ -21,7 +21,12 @@
         </template>
       </el-table-column>
       <el-table-column label="地址" prop="position"> </el-table-column>
-      <el-table-column label="设备类型" prop="type"> </el-table-column>
+      <el-table-column label="设备类型" prop="type"> 
+         <!-- eslint-disable-next-line -->
+        <template slot-scope="scope">
+          <span> {{deviceTypelist[ scope.row.type] }}</span>
+        </template>
+      </el-table-column>
       <el-table-column
         label="设备存货情况"
         prop="containerState"
@@ -71,7 +76,7 @@
 </template>
 
 <script>
-import { deviceQuery, devicelist, userquery } from "@/api/table";
+import { deviceQuery, devicelist, userquery,deviceTypelist } from "@/api/table";
 import { getUserinfo } from "@/utils/auth";
 export default {
   data() {
@@ -81,7 +86,7 @@ export default {
       search: "",
       bind: false,
       goodslist: [],
-
+      deviceTypelist: {},
       form: {
         pageNum: 1,
         pageSize: 20,
@@ -104,6 +109,18 @@ export default {
     userlist.data.map(function (item) {
       that.userlistmap[item.userId] = item;
     });
+    await deviceTypelist()
+      .then((response) => {
+          response.data.map((item)=>{
+         
+          that.deviceTypelist[item.id]=item.name
+          
+         
+        });
+       
+      })
+      .catch((err) => {});
+
     this.queryList();
   },
   methods: {

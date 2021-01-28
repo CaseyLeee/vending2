@@ -76,7 +76,7 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/ordermanage/orderlist',
     name: 'ordermanage',
-    meta: { title: '订单管理', icon: 'el-icon-s-help' ,roles:['normal']},
+    meta: { title: '订单管理', icon: 'el-icon-s-help' ,roles:['admin','normal'] },
     children: [
       {
         path: 'orderlist',
@@ -88,7 +88,7 @@ export const asyncRoutes = [
         path: 'queryrefund',
         name: 'queryrefund',
         component: () => import('@/views/ordermanage/queryrefund'),
-        meta: { title: '退款查询', icon: 'table' }
+        meta: { title: '退款查询', icon: 'table' ,roles:['admin']}
       }
      
     ]

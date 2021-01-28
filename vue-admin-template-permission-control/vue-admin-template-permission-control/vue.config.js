@@ -40,7 +40,7 @@ module.exports = {
     proxy:{
      
       '/api': {   
-        target: 'http://www.iimiim.cn/vending/',  // 目标地址
+        target: 'https://www.iimiim.cn/vending/',  // 目标地址
        // target: 'http://www.iimiim.cn/vending/', 
        secure:false  ,
         changeOrigin: true,   // 设置同源  默认false，是否需要改变原始主机头为目标URL,       

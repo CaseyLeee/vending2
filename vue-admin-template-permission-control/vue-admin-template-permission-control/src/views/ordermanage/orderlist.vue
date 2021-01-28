@@ -23,7 +23,7 @@
           {{ scope.row.totalPrice / 100 }}
         </template>
       </el-table-column>
-      <el-table-column label="消费者id" prop="comumerId"> </el-table-column>
+      <el-table-column label="消费者id" prop="cosumerId"> </el-table-column>
       <el-table-column label="状态" prop="status">
         <template slot-scope="scope">
           {{ scope.row.status | formatStatus }}
@@ -39,12 +39,12 @@
           {{ scope.row.createTime | formatDate }}
         </template>
       </el-table-column>
-      <el-table-column label="设备id" prop="deviceId"> </el-table-column>
-      <el-table-column label="客户订单状态" prop="statusCosumer">
-         <template slot-scope="scope">
-          {{ scope.row.statusCosumer==0?"删除":"正常" }}
+      <!-- <el-table-column label="设备id" prop="deviceId"> </el-table-column> -->
+      <!-- <el-table-column label="客户订单状态" prop="statusCosumer">
+        <template slot-scope="scope">
+          {{ scope.row.statusCosumer == 0 ? "删除" : "正常" }}
         </template>
-      </el-table-column>
+      </el-table-column> -->
 
       <el-table-column align="center" fixed="right" width="200">
         <!-- eslint-disable-next-line -->
@@ -56,17 +56,17 @@
             placeholder="输入订单关键字搜索"
           />
         </template>
-        <template slot-scope="scope">
+        <template slot-scope="scope" v-if="type == 1">
           <el-button
             size="mini"
             type="danger"
-            @click="refundadd(scope.row.orderId)"
+            @click="refundadd(scope.row.orderId, scope.row.totalPrice)"
             >退款</el-button
           >
-           <el-button
-           v-if="scope.row.status==5"
+          <el-button
+            v-if="scope.row.status == 5"
             size="mini"
-             type="primary"
+            type="primary"
             @click="refundquery(scope.row.orderId)"
             >查询退款</el-button
           >
@@ -83,12 +83,25 @@
     >
     </el-pagination>
 
-    <el-dialog title="退款" :visible.sync="dialogFormVisible">
-      <el-form :model="formpost">
-        <el-form-item label="退款金额" :label-width="formLabelWidth">
-          <el-input v-model="formpost.money" autocomplete="off"></el-input>
+    <el-dialog
+      title="退款"
+      :visible.sync="dialogFormVisible"
+     
+      
+    >
+      <el-form :model="formpost" ref="ruleForm"  :rules="rules">
+        <el-form-item
+          label="退款金额"
+          :label-width="formLabelWidth"
+          prop="moneyori"
+        >
+          <el-input v-model="formpost.moneyori" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="退款原因" :label-width="formLabelWidth">
+        <el-form-item
+          label="退款原因"
+          :label-width="formLabelWidth"
+          prop="reason"
+        >
           <el-input v-model="formpost.reason" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
@@ -101,10 +114,31 @@
 </template>
 
 <script>
-import { refund, orderquery, refundadd } from "@/api/table";
+import {
+  refund,
+  orderquery,
+  refundadd,
+  backGroundorderquery,
+} from "@/api/table";
+import { getUserinfo } from "@/utils/auth";
 export default {
   data() {
     return {
+      rules: {
+        reason: [
+          { required: true, message: "请输入退款原因", trigger: "blur" },
+          {
+            min: 1,
+            max: 100,
+            message: "长度在 1 到 100 个字符",
+            trigger: "blur",
+          },
+        ],
+        moneyori: [
+          { required: true, message: "请输入退款金额", trigger: "blur" },
+        ],
+      },
+      type: "",
       formLabelWidth: "120px",
       dialogFormVisible: false,
       search: "",
@@ -122,12 +156,12 @@ export default {
       formpost: {
         orderId: "",
         money: "",
+        moneyori: "",
         reason: "",
       },
     };
   },
   filters: {
-  
     formatStatus: function (value) {
       return value == 0
         ? "删除"
@@ -144,11 +178,14 @@ export default {
         : "其他";
     },
   },
-  created() {
+  created() {},
+  computed: {},
+  mounted() {
+    let { type } = JSON.parse(getUserinfo());
+    this.type = type;
+
     this.queryList();
   },
-  computed: {},
-  mounted() {},
   methods: {
     // submit() {
     //   this.dialogFormVisible = false;
@@ -156,7 +193,7 @@ export default {
     //     .then((response) => {})
     //     .catch((err) => {});
     // },
-    refundquery(orderId){
+    refundquery(orderId) {
       this.$router.push({
         name: "queryrefund",
         path: "/ordermanage/queryrefund",
@@ -169,35 +206,54 @@ export default {
       return `${process.env.VUE_APP_PIC_API}/${picturePath}`;
     },
     handleSizeChange(val) {
-    this.form.pageNum=val
-    this.queryList()
+      this.form.pageNum = val;
+      this.queryList();
     },
     handleCurrentChange(val) {
-     this.form.pageNum=val
-    this.queryList()
+      this.form.pageNum = val;
+      this.queryList();
     },
 
-    refundadd(orderId) {
+    refundadd(orderId, total) {
       this.formpost.orderId = orderId;
+      this.formpost.moneyori = total / 100;
+
       this.dialogFormVisible = true;
     },
     refundsubmit() {
       let that = this;
-      this.formpost.money = this.formpost.money * 100;
-      refundadd(this.formpost)
-        .then((response) => {
-          // that.formpost.money=''
-          //   that.formpost.reason=''
-        })
-        .catch((err) => {});
+      that.$refs['ruleForm'].validate((valid) => {
+        if (valid) {
+          this.formpost.money = this.formpost.moneyori * 100;
+          refundadd(this.formpost)
+            .then((response) => {
+              // that.formpost.money=''
+              //   that.formpost.reason=''
+              this.$message.success("退款成功");
+            })
+            .catch((err) => {});
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
     },
     queryList() {
-      orderquery(this.form)
-        .then((response) => {
-          this.goodslist = response.data;
-          this.pager.total = response.totalNum;
-        })
-        .catch((err) => {});
+      if (this.type == 0) {
+        orderquery(this.form)
+          .then((response) => {
+            this.goodslist = response.data;
+            this.pager.total = response.totalNum;
+          })
+          .catch((err) => {});
+      } else {
+        backGroundorderquery(this.form)
+          .then((response) => {
+            this.goodslist = response.data;
+            this.pager.total = response.totalNum;
+          })
+          .catch((err) => {});
+      }
     },
   },
 };

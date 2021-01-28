@@ -123,7 +123,7 @@ export function  refund(data) {
 }
 export function  refundquery(params) {
   return request({
-    url: '/foreground/refund/query',
+    url: '/backGround/refund/query',
     method: 'get',
     params
   })
@@ -135,10 +135,17 @@ export function  orderquery(data) {
     data
   })
 }
+export function   backGroundorderquery(data) {
+  return request({
+    url: '/backGround/order/query',
+    method: 'post',
+    data
+  })
+}
 
 export function  refundadd(params) {
   return request({
-    url: '/foreground/refund/add',
+    url: '/backGround/refund/add',
     method: 'get',
     params
   })

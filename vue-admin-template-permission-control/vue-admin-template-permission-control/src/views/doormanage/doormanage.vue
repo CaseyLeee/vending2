@@ -1,11 +1,15 @@
 <template>
   <div class="conbody">
-    <div v-for="item in listreplen" :key="item.deviceId" :class="['contain',item.online?'':'grey']">
-      <span>{{ item.name }}{{item.online?'':'(离线)'}}</span>
+    <div
+      v-for="item in listreplen"
+      :key="item.deviceId"
+      :class="['contain', item.online ? '' : 'grey']"
+    >
+      <span>{{ item.name }}{{ item.online ? "" : "(离线)" }}</span>
       <div class="circlecon">
         <div
           v-for="con in item.containerlist.filter(function (data) {
-            return data.number !=1 && data.number !=2;
+            return data.number != 1 && data.number != 2;
           })"
           :key="con.containerId"
           :class="[
@@ -23,12 +27,7 @@
         </div>
       </div>
     </div>
-    <el-dialog
-      title="请选择操作"
-      :visible.sync="centerDialogVisible"
-     
-      center
-    >
+    <el-dialog title="请选择操作" :visible.sync="centerDialogVisible" center>
       <span slot="footer" class="dialog-footer">
         <el-button @click="openconfirm()" type="success" size="mini"
           >已补货</el-button
@@ -87,21 +86,19 @@ export default {
     async deviceopen() {
       this.centerDialogVisible = false;
       const res = await deviceopen({ deviceId: this.deviceId });
-      if(res.code==1){
-           this.$message.success("开门成功");
-      }
-      else{
+      if (res.code == 1) {
+        this.$message.success("开门成功");
+      } else {
         this.$message.success(res.message);
       }
     },
     async openconfirm() {
       this.centerDialogVisible = false;
-      const res = await openconfirm({ deviceId: this.deviceId });
+      const res = await openconfirm({ deviceId: this.deviceId,containerState:11111111 });
       this.centerDialogVisible = false;
-       if(res.code==1){
-           this.$message.success("全部补货成功");
-      }
-      else{
+      if (res.code == 1) {
+        this.$message.success("全部补货成功");
+      } else {
         this.$message.success(res.message);
       }
     },
@@ -112,11 +109,13 @@ export default {
       // array[this.number - 1] = 1;
       // let str = array.toString().replaceAll(",", "");
       this.centerDialogVisible = false;
-      const res = await devicecomand({ deviceId: this.deviceId, number:this.number });
-       if(res.code==1){
-           this.$message.success("开此仓门成功");
-      }
-      else{
+      const res = await devicecomand({
+        deviceId: this.deviceId,
+        number: this.number,
+      });
+      if (res.code == 1) {
+        this.$message.success("开此仓门成功");
+      } else {
         this.$message.success(res.message);
       }
     },
@@ -129,46 +128,46 @@ export default {
 
     async queryList() {
       let devicemap = {};
-     
+
       const res = await devicelist(this.form1); //先查设备  再查设备类型
-    
+
       if (res.code == 1) {
+        this.form2.deviceTypeId = 1;
+        const res2 = await querycontainerlist(this.form2);
         res.data.forEach(async (element) => {
           let type = element.type;
-          console.log(element)
-          if (devicemap[type] == undefined) {
-            this.form2.deviceTypeId = type;
-            const res = await querycontainerlist(this.form2);
-              
-            if (res.code == 1) {
-              devicemap[type] = res.data;
-              element.containerlist = devicemap[type];
-              
-            }
-          } else {
-            element.containerlist = devicemap[type];
-          }
-          
-            this.listreplen.push(element);
-          
+          console.log(element);
+          // if (devicemap[type] == undefined) {
+          //   this.form2.deviceTypeId = type;
+          //   const res = await querycontainerlist(this.form2);
+
+          //   if (res.code == 1) {
+          //     devicemap[type] = res.data;
+          //     element.containerlist = devicemap[type];
+
+          //   }
+          // } else {
+          //   element.containerlist = devicemap[type];
+          // }
+
+          element.containerlist = res2.data;
+          this.listreplen.push(element);
         });
       }
-
-      
     },
   },
 };
 </script>
 
 <style  lang='scss' scoped>
-.grey{
-  filter:grayscale(100%);
+.grey {
+  filter: grayscale(100%);
 }
-.el-image{
+.el-image {
   height: 100%;
 }
 .el-dialog__body {
- padding:0px !important
+  padding: 0px !important;
 }
 .el-dialog__footer {
   span {

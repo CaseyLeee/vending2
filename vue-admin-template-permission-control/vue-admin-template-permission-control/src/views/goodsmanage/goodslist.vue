@@ -76,6 +76,16 @@
       layout="total, sizes, prev, pager, next, jumper"
     >
     </el-pagination>
+
+    <el-dialog title="绑定" :visible.sync="dialogFormVisible">
+     
+          <el-input v-model="formpost.number" autocomplete="off" placeholder="请输入需要绑定商品的仓位号码"></el-input>
+        
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="bindfun2">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -84,6 +94,7 @@ import { getGoods, containeradd } from "@/api/table";
 export default {
   data() {
     return {
+       dialogFormVisible: false,
       search: "",
       bind: false,
       goodslist: [],
@@ -112,7 +123,7 @@ export default {
       this.bind = true;
     }
     this.formpost.typeId = typeId;
-    this.formpost.number = this.$route.params.number;
+    // this.formpost.number = this.$route.params.number;
     //通过id获取商品参数
     console.log("typeId", typeId);
 
@@ -150,20 +161,26 @@ export default {
         })
         .catch((err) => {});
     },
-    bindfun(id) {
+    bindfun(id){
+       this.formpost.commodifyId = id;
+      this.dialogFormVisible = true;
+     
+    },
+    bindfun2() {
       this.formpost.containerId = this.guid();
-      this.formpost.commodifyId = id;
+      // this.formpost.commodifyId = id;
       containeradd(this.formpost)
         .then((response) => {
           this.$message({
             type: "success",
             message: "绑定成功!",
           });
+          this.dialogFormVisible = false;
           this.$router.push({
             name: "rootbind",
             path: "/rootmanage/rootbind",
             params: {
-              id,
+             typeId: this.formpost.typeId
             },
           });
         })

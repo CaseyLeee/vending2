@@ -17,11 +17,12 @@
       </el-form-item>
 
       <el-form-item label="价格" prop="price">
-        <el-input
+        <el-input-number
+          :min=0
           v-model.number="form.priceyuan"
           type="number"
           oninput="if(value.length>7)value=value.slice(0,7)"
-        ></el-input>
+        ></el-input-number>
       </el-form-item>
       <el-form-item label="单位" prop="unit">
         <el-input v-model.number="form.unit" maxLength="3"></el-input>

@@ -26,7 +26,7 @@ service.interceptors.request.use(
       // let each request carry token
       // ['X-Token'] is a custom headers key
       // please modify it according to the actual situation
-      config.headers['msToken'] = getToken()
+      config.headers['msToken'] =getToken()
     }
     return config
   },
@@ -90,6 +90,13 @@ service.interceptors.response.use(
       type: 'error',
       duration: 5 * 1000
     })
+    
+    if ( error.message.indexOf("401") >0){
+     
+      store.dispatch('user/resetToken').then(() => {
+              location.reload()
+            })
+    }
     return Promise.reject(error)
   }
 )
