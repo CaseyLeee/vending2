@@ -16,12 +16,26 @@
         <el-input v-model="form.details" maxLength="20"></el-input>
       </el-form-item>
 
-      <el-form-item label="价格" prop="price">
+      <el-form-item label="描述图" prop="filelist" ref="filelist">
+        <el-upload
+          accept=".png,.jpg"
+          :action="uploadurl"
+          list-type="picture-card"
+          :on-preview="handlePictureCardPreview"
+          :on-remove="handleRemove"
+          :file-list="fileListpic"
+          :on-success="handleAvatarSuccess"
+          :before-upload="beforeAvatarUpload"
+        >
+          <i class="el-icon-plus"></i>
+        </el-upload>
+      </el-form-item>
+
+      <el-form-item label="价格" prop="priceyuan">
         <el-input-number
-          :min=0
+          :min="0"
           v-model.number="form.priceyuan"
           type="number"
-          oninput="if(value.length>7)value=value.slice(0,7)"
         ></el-input-number>
       </el-form-item>
       <el-form-item label="单位" prop="unit">
@@ -52,18 +66,24 @@
         }}</el-button>
       </el-form-item>
     </el-form>
+    <el-dialog :visible.sync="dialogVisible">
+      <img width="100%" :src="dialogImageUrl" alt="" />
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { addGoods, commodifyupdate } from "@/api/table";
+import { getGoods, addGoods, commodifyupdate } from "@/api/table";
 
 export default {
   data() {
     return {
+      fileListpic: [],
+      fileList: [],
       uploadurl: `${process.env.VUE_APP_BASE_API}/file/upload`,
       oper: "立即添加",
-
+      dialogImageUrl: "",
+      dialogVisible: false,
       form: {
         commodifyId: "",
         name: "",
@@ -71,8 +91,14 @@ export default {
         pircture: "",
         details: "",
         unit: "",
+        detailsPic: "",
       },
+      form2: {
+        pageNum: 1,
+        pageSize: 20,
 
+        status: "1",
+      },
       rules: {
         name: [
           {
@@ -115,15 +141,37 @@ export default {
             trigger: "change",
           },
         ],
+        filelist: [
+          {
+            required: true,
+            validator: (rule, value, callback) => {
+              if (this.form.detailsPic === "") {
+                callback(new Error("请上传详情图片"));
+              } else {
+                callback();
+              }
+            },
+            trigger: "change",
+          },
+        ],
       },
     };
   },
-  mounted() {
+
+  async mounted() {
+    this.form2.commodifyId = "4b4c92b3a3b6c0471cad40f31b8250f0";
+    let res = await getGoods(this.form2)
+        .then((response) => {
+          console.log("res", response.data);
+         return response.data
+        })
+        .catch((err) => {});
+    console.log("res·", res);
     let row = this.$route.params.row;
     if (row != undefined) {
       this.oper = "立即修改";
       row.priceyuan = row.price / 100;
-      this.form = Object.assign({}, this.form, row);
+      row.this.form = Object.assign({}, this.form, row);
     }
 
     //通过id获取商品参数
@@ -131,6 +179,58 @@ export default {
   },
 
   methods: {
+    queryList() {
+      console.log(getGoods(this.form2))
+      getGoods(this.form2)
+        .then((response) => {
+          console.log("res", response.data);
+         
+        })
+        .catch((err) => {});
+    },
+    handleRemove(file, fileList) {
+      fileList.map((index, item) => {
+        if (item.uid == file.uid) {
+          fileList.splice(index, 1);
+        }
+      });
+      this.fileListpic = fileList;
+    },
+    handlePictureCardPreview(file) {
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
+    },
+    handleAvatarSuccess(res, file, fileList) {
+      if (res.code == 1) {
+        fileList.map((item, index) => {
+          //直接得到最后一个数组不能直接添加元素 urlori
+
+          if (index === fileList.length - 1) {
+            item.urlori = res.message;
+            item.url = `${process.env.VUE_APP_PIC_API}${res.message}`;
+          }
+        });
+        this.fileListpic = fileList;
+        this.$refs.filelist.clearValidate();
+        console.log(this.fileListpic);
+      } else {
+        this.$message.error("图片上传失败");
+      }
+    },
+    beforeAvatarUpload(file) {
+      console.log(file.type);
+      const isJPG = file.type.indexOf("image") > -1;
+      // const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isJPG) {
+        this.$message.error("请上传图片!");
+      }
+      // if (!isLt2M) {
+      //   this.$message.error("上传头像图片大小不能超过 2MB!");
+      // }
+      return isJPG;
+    },
+
     getAvator(picturePath) {
       return `${process.env.VUE_APP_PIC_API}/${picturePath}`;
     },
@@ -144,6 +244,11 @@ export default {
       }
     },
     async onSubmit(formName) {
+      this.form.detailsPic = "";
+      this.fileListpic.map((item) => {
+        this.form.detailsPic = this.form.detailsPic + "," + item.urlori;
+      });
+      console.log(this.form.detailsPic);
       this.$refs[formName].validate(async (valid) => {
         if (valid) {
           if (this.oper == "立即修改") {
