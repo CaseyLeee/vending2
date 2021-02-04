@@ -159,35 +159,38 @@ export default {
   },
 
   async mounted() {
-    this.form2.commodifyId = "4b4c92b3a3b6c0471cad40f31b8250f0";
-    let res = await getGoods(this.form2)
+    if (this.$route.query.commodifyId) {
+      this.form2.commodifyId = this.$route.query.commodifyId;
+
+      let row = await getGoods(this.form2)
         .then((response) => {
           console.log("res", response.data);
-         return response.data
+          return response.data[0];
         })
         .catch((err) => {});
-    console.log("res·", res);
-    let row = this.$route.params.row;
-    if (row != undefined) {
-      this.oper = "立即修改";
-      row.priceyuan = row.price / 100;
-      row.this.form = Object.assign({}, this.form, row);
-    }
 
-    //通过id获取商品参数
-    console.log("row", row);
+      // let row = this.$route.params.row;
+
+      if (row != undefined) {
+        this.oper = "立即修改";
+        row.priceyuan = row.price / 100;
+        if (row.detailsPic) {
+          row.detailsPic.split(",").map((item) => {
+            if (item != "") {
+              this.fileListpic.push({
+                url: `${process.env.VUE_APP_PIC_API}${item}`,
+                urlori: item,
+              });
+            }
+          });
+        }
+
+        this.form = Object.assign({}, this.form, row);
+      }
+    }
   },
 
   methods: {
-    queryList() {
-      console.log(getGoods(this.form2))
-      getGoods(this.form2)
-        .then((response) => {
-          console.log("res", response.data);
-         
-        })
-        .catch((err) => {});
-    },
     handleRemove(file, fileList) {
       fileList.map((index, item) => {
         if (item.uid == file.uid) {

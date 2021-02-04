@@ -147,8 +147,8 @@ export default {
       this.$router.push({
         name: "goodsedit",
         path: "/goodsmanage/goodsedit",
-        params: {
-          row,
+        query: {
+          commodifyId:row.commodifyId,
         },
       });
     },
