@@ -144,6 +144,7 @@ export default {
       this.queryList();
     },
     edit(row) {
+      console.log(row)
       this.$router.push({
         name: "goodsedit",
         path: "/goodsmanage/goodsedit",

@@ -187,6 +187,13 @@ export function  foredeviceupdate(data) {
     data
   })
 }
+export function   userupdate(data) {
+  return request({
+    url: '/user/update',
+    method: 'POST',
+    data
+  })
+}
 
 
 

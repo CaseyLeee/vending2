@@ -9,25 +9,25 @@
       "
       style="width: 100%"
     >
-      <el-table-column label="userid" prop="userId"> </el-table-column>
+      <!-- <el-table-column label="userid" prop="userId"> </el-table-column> -->
       <el-table-column label="名称" prop="name"> </el-table-column>
 
       <el-table-column label="账号" prop="account"> </el-table-column>
 
       <el-table-column label="绑定邮箱" prop="phone"> </el-table-column>
-      <el-table-column label="账户父id" prop="userPid"> </el-table-column>
+      <!-- <el-table-column label="账户父id" prop="userPid"> </el-table-column> -->
       <el-table-column label="logo" prop="logo">
         <template slot-scope="scope">
           <img :src="getAvator(scope.row.logo)" />
         </template>
       </el-table-column>
-      <el-table-column label="地址" prop="address"> </el-table-column>
+      <!-- <el-table-column label="地址" prop="address"> </el-table-column>
       <el-table-column label="开箱码" prop="devicePassord"> </el-table-column>
       <el-table-column label="状态" prop="status"> </el-table-column>
-      <el-table-column label="账户类型" prop="type"> </el-table-column>
+      <el-table-column label="账户类型" prop="type"> </el-table-column> -->
       <el-table-column label="微信id" prop="weixin"> </el-table-column>
-      <el-table-column label="费率" prop="feeRate"> </el-table-column>
-      <el-table-column label="余额" prop="money"> </el-table-column>
+      <el-table-column label="提成比例" prop="feeRate"> </el-table-column>
+      <!-- <el-table-column label="余额" prop="money"> </el-table-column> -->
       <el-table-column align="center" fixed="right" width="200">
         <!-- eslint-disable-next-line -->
         <template slot="header" slot-scope="scope">
@@ -38,7 +38,11 @@
             placeholder="输入关键字搜索"
           />
         </template>
+         
         <template slot-scope="scope">
+           <el-button size="mini"  @click="toedit(scope.row.account)"
+            >编辑</el-button
+          >
           <el-button size="mini" type="danger" @click="del(scope.row.userId)"
             >删除</el-button
           >
@@ -88,6 +92,16 @@ export default {
   computed: {},
   mounted() {},
   methods: {
+    toedit(account){
+      
+      this.$router.push({
+        name: "tenantsedit",
+        path: "/tenantsmanage/tenantsedit",
+        query: {
+          id:account,
+        },
+      });
+    },
     getAvator(picturePath) {
       return `${process.env.VUE_APP_PIC_API}/${picturePath}`;
     },

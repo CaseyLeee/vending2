@@ -12,14 +12,14 @@
         <el-input v-model="form.name"></el-input>
       </el-form-item>
 
-      <el-form-item label="账号" prop="account">
+      <el-form-item label="账号" prop="account" v-if="add">
         <el-input v-model="form.account"></el-input>
       </el-form-item>
 
       <el-form-item label="密码" prop="password">
         <el-input v-model="form.password"></el-input>
       </el-form-item>
-      <el-form-item label="绑定邮箱" prop="phone">
+      <el-form-item label="绑定邮箱" prop="phone" v-if="add">
         <el-input v-model="form.phone"></el-input>
       </el-form-item>
       <!-- 
@@ -49,7 +49,7 @@
         <el-input v-model="form.devicePassord"></el-input>
       </el-form-item>
 
-      <el-form-item label="账户类型" prop="type">
+      <el-form-item label="账户类型" prop="type" v-if="add">
         <el-select
           v-model="form.type"
           value-key=""
@@ -66,7 +66,7 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="微信id" prop="weixin">
+      <el-form-item label="微信id" prop="weixin" v-if="add">
         <el-input v-model="form.weixin"></el-input>
       </el-form-item>
       <el-form-item label="费率" prop="feeRate">
@@ -83,7 +83,7 @@
 </template>
 
 <script>
-import { userregist } from "@/api/table";
+import { userregist, userquery,userupdate } from "@/api/table";
 import { getUserinfo } from "@/utils/auth";
 export default {
   data() {
@@ -100,13 +100,16 @@ export default {
       }
     };
     return {
+      add: true,
       uploadurl: `${process.env.VUE_APP_BASE_API}/file/upload`,
       options: [
         { label: "普通商户", value: "0" },
         { label: "机器运维", value: "1" },
       ],
+      form2: {},
       oper: "立即添加",
       imageUrl: "",
+      passwordori:"",
       form: {
         userId: "",
         name: "",
@@ -168,14 +171,36 @@ export default {
       },
     };
   },
-  mounted() {
-    let id = this.$route.params.id;
-    if (id != null) {
+  async mounted() {
+    let id = this.$route.query.id;
+
+    if (id) {
+      this.add = false;
+      this.form2.name = id;
+
+      let row = await userquery(this.form2)
+        .then((response) => {
+          console.log("res", response.data);
+          let res = response.data[0];
+          if (res.account) {
+            
+            res.password = "******";
+           
+          }
+          return res;
+        })
+        .catch((err) => {});
+
+      // let row = this.$route.params.row;
+
       this.oper = "立即修改";
+
+      this.form = Object.assign({}, this.form, row);
+    } else {
+      this.form.userPid = JSON.parse(getUserinfo()).userId; //得到父id
+
+      console.log("id", this.userPid);
     }
-    this.form.userPid = JSON.parse(getUserinfo()).userId;
-    //通过id获取货柜参数
-    console.log("id", this.userPid);
   },
   methods: {
     getAvator(picturePath) {
@@ -192,15 +217,28 @@ export default {
       // this.$refs.upload.submit()
       this.$refs[formName].validate(async (valid) => {
         if (valid) {
-          this.form.userId = this.guid();
-          console.log(this.form);
-          userregist(this.form)
-            .then((response) => {
-              this.$message.success("添加账户成功");
-            })
-            .catch((error) => {
-              this.$message.error(error);
-            });
+          if (this.oper == "立即修改") {
+            if(this.form.password=="******"){
+              delete this.form.password
+            }
+             userupdate(this.form)
+              .then((response) => {
+                this.$message.success("修改账户成功");
+              })
+              .catch((error) => {
+                this.$message.error(error);
+              });
+          } else {
+            this.form.userId = this.guid();
+            console.log(this.form);
+            userregist(this.form)
+              .then((response) => {
+                this.$message.success("添加账户成功");
+              })
+              .catch((error) => {
+                this.$message.error(error);
+              });
+          }
         } else {
         }
       });
