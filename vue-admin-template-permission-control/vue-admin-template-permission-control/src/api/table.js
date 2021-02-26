@@ -130,7 +130,7 @@ export function  refundquery(params) {
 }
 export function  orderquery(data) {
   return request({
-    url: '/foreground/order/query',
+    url: '/foreground/turnover/query',
     method: 'post',
     data
   })

@@ -21,11 +21,8 @@
         </template>
       </el-table-column>
       <el-table-column label="地址" prop="position"> </el-table-column>
-      <el-table-column label="设备类型" prop="type"> 
-         <!-- eslint-disable-next-line -->
-        <template slot-scope="scope">
-          <span> {{deviceTypelist[ scope.row.type] }}</span>
-        </template>
+      <el-table-column label="设备类型" prop="deviceTypeName"> 
+       
       </el-table-column>
       <el-table-column
         label="设备存货情况"
@@ -109,17 +106,17 @@ export default {
     userlist.data.map(function (item) {
       that.userlistmap[item.userId] = item;
     });
-    await deviceTypelist()
-      .then((response) => {
-          response.data.map((item)=>{
+    // await deviceTypelist()
+    //   .then((response) => {
+    //       response.data.map((item)=>{
          
-          that.deviceTypelist[item.id]=item.name
+    //       that.deviceTypelist[item.id]=item.name
           
          
-        });
+    //     });
        
-      })
-      .catch((err) => {});
+    //   })
+    //   .catch((err) => {});
 
     this.queryList();
   },

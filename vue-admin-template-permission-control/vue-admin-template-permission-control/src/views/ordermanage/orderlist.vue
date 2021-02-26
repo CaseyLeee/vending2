@@ -10,33 +10,51 @@
       style="width: 100%"
     >
       <el-table-column label="orderId" prop="orderId"> </el-table-column>
-      <el-table-column label="商品名称" prop="commodifyName"> </el-table-column>
+      <el-table-column label="商品名称"> 
+           <template slot-scope="scope"> {{ type==0?scope.row.order.commodifyName :scope.row.commodifyName}} </template>
+      </el-table-column>
 
       <el-table-column label="单价">
-        <template slot-scope="scope"> {{ scope.row.price / 100 }} </template>
+        <template slot-scope="scope"> {{ type==0?scope.row.order.price / 100 :scope.row.price / 100}} </template>
       </el-table-column>
-
-      <el-table-column label="数量" prop="number"> </el-table-column>
-      <el-table-column label="单位" prop="unit"> </el-table-column>
+     
+      <el-table-column label="数量" >   <template slot-scope="scope"> {{type==0?scope.row.order.number:scope.row.number}}</template></el-table-column>
+      <el-table-column label="单位"> 
+         <template slot-scope="scope"> {{type==0?scope.row.order.unit:scope.row.unit}}</template>
+      </el-table-column>
       <el-table-column label="总价">
         <template slot-scope="scope">
-          {{ scope.row.totalPrice / 100 }}
+          {{ type==0?(scope.row.order.totalPrice / 100 ):(scope.row.totalPrice / 100)}}
         </template>
       </el-table-column>
-      <el-table-column label="消费者id" prop="cosumerId"> </el-table-column>
-      <el-table-column label="状态" prop="status">
-        <template slot-scope="scope">
+      <el-table-column label="消费者id"> 
+           <template slot-scope="scope"> {{type==0?scope.row.order.cosumerId:scope.row.cosumerId}}</template>
+      </el-table-column>
+      <el-table-column label="状态">
+        <template slot-scope="scope" v-if="type==0">
+          {{ scope.row.order.status | formatStatus }}
+        </template>
+        <template slot-scope="scope" v-if="type==1">
           {{ scope.row.status | formatStatus }}
         </template>
       </el-table-column>
-      <el-table-column label="更新时间" prop="updateTime">
-        <template slot-scope="scope">
+      <el-table-column label="更新时间" >
+        <template slot-scope="scope" v-if="type==0">
+          {{ scope.row.order.updateTime | formatDate }}
+        </template>
+           <template slot-scope="scope" v-if="type==1">
           {{ scope.row.updateTime | formatDate }}
         </template>
       </el-table-column>
-      <el-table-column label="创建时间" prop="createTime">
+      <el-table-column label="创建时间">
         <template slot-scope="scope">
           {{ scope.row.createTime | formatDate }}
+        </template>
+        
+      </el-table-column>
+      <el-table-column label="提成" v-if="type==0">
+        <template slot-scope="scope">
+          {{ type==0?(scope.row.order.totalPrice *  scope.row.rate/100 ):""}}
         </template>
       </el-table-column>
       <!-- <el-table-column label="设备id" prop="deviceId"> </el-table-column> -->
@@ -230,6 +248,7 @@ export default {
               // that.formpost.money=''
               //   that.formpost.reason=''
               this.$message.success("退款成功");
+                that.queryList();
             })
             .catch((err) => {});
         } else {
