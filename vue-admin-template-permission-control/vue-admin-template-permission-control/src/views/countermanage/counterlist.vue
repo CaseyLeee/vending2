@@ -21,8 +21,7 @@
         </template>
       </el-table-column>
       <el-table-column label="地址" prop="position"> </el-table-column>
-      <el-table-column label="设备类型" prop="deviceTypeName"> 
-       
+      <el-table-column label="设备类型" prop="deviceTypeName">
       </el-table-column>
       <el-table-column
         label="设备存货情况"
@@ -73,7 +72,12 @@
 </template>
 
 <script>
-import { deviceQuery, devicelist, userquery,deviceTypelist } from "@/api/table";
+import {
+  deviceQuery,
+  devicelist,
+  userquery,
+  deviceTypelist,
+} from "@/api/table";
 import { getUserinfo } from "@/utils/auth";
 export default {
   data() {
@@ -106,17 +110,15 @@ export default {
     userlist.data.map(function (item) {
       that.userlistmap[item.userId] = item;
     });
-    // await deviceTypelist()
-    //   .then((response) => {
-    //       response.data.map((item)=>{
-         
-    //       that.deviceTypelist[item.id]=item.name
-          
-         
-    //     });
-       
-    //   })
-    //   .catch((err) => {});
+    if (this.type == 1) {//运维
+      await deviceTypelist()
+        .then((response) => {
+          response.data.map((item) => {
+            that.deviceTypelist[item.id] = item.name;
+          });
+        })
+        .catch((err) => {});
+    }
 
     this.queryList();
   },
@@ -152,6 +154,11 @@ export default {
               item.username =
                 that.userlistmap[item.userId] != undefined
                   ? that.userlistmap[item.userId].name
+                  : "";
+                  console.log(  that.deviceTypelist)
+              item.deviceTypeName =
+                that.deviceTypelist[item.type] != undefined
+                  ? that.deviceTypelist[item.type]
                   : "";
               item.arr =
                 item.containerState != undefined

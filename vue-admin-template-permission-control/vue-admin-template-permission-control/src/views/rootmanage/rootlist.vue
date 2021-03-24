@@ -28,6 +28,9 @@
           <el-button size="mini" type="danger" @click="del(scope.row.id)"
             >删除</el-button
           >
+          <el-button size="mini" @click="edit(scope.row)"
+            >编辑</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -47,6 +50,14 @@ export default {
     this.queryList();
   },
   methods: {
+    edit(row) {
+      console.log(row);
+      this.$router.push({
+        name: "rootedit",
+        path: "/rootmanage/rootedit",
+        params:{row}
+      });
+    },
     del(id) {
       this.$confirm("确定删除此类型吗, 是否继续?", "提示", {
         confirmButtonText: "确定",
@@ -54,12 +65,12 @@ export default {
         type: "warning",
       })
         .then(() => {
-          deviceTypedelete(this.$qs.stringify({"deviceTypeId":id}))
+          deviceTypedelete(this.$qs.stringify({ deviceTypeId: id }))
             .then((response) => {
-               this.queryList();
+              this.queryList();
               this.$message({
                 type: "success",
-                message: "删除成功!" ,
+                message: "删除成功!",
               });
             })
             .catch((err) => {});
@@ -67,7 +78,7 @@ export default {
         .catch(() => {
           this.$message({
             type: "info",
-            message: "已取消删除" ,
+            message: "已取消删除",
           });
         });
     },

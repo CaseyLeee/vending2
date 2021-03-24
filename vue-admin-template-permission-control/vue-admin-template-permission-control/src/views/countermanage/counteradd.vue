@@ -25,8 +25,14 @@
           >选择账号</el-button
         >
       </el-form-item>
-      <el-form-item label="地址" v-if="oper == '立即添加' && type == 1">
-        <el-input v-model="form.position"></el-input>
+      <el-form-item label="地址(','号分隔)" prop="position">
+        <el-input v-model="form.position"></el-input
+        ><a
+          target="_blank"
+          style="color: #409eff"
+          href="https://lbs.qq.com/tool/getpoint/"
+          >经纬度拾取</a
+        >
       </el-form-item>
       <el-form-item label="货柜类型" prop="type" v-if="type == 1">
         <el-select v-model="form.type" placeholder="请选择">
@@ -115,6 +121,17 @@ import {
 import { getUserinfo } from "@/utils/auth";
 export default {
   data() {
+    const validatepos = (rule, value, callback) => {
+     
+      if (value.length < 1) {
+        callback(new Error("请输入经纬度(','号分割,经度在前,纬度在后)"));
+      } else if (value.indexOf(',') < 0) {
+       // 113.934528,22.5405030000000011
+        callback(new Error("经纬度不合法"));
+      } else {
+        callback();
+      }
+    };
     return {
       type: 0,
       arr: [0, 0, 0, 0, 0, 0, 0, 0],
@@ -159,12 +176,19 @@ export default {
             trigger: "change",
           },
         ],
+        position: [
+          {
+            required: true,
+            trigger: "blur",
+            validator: validatepos,
+          },
+        ],
       },
     };
   },
   mounted() {
     let { name, userId, type } = JSON.parse(getUserinfo());
-   
+
     this.type = type;
     if (type == 1) {
       deviceTypelist()
@@ -178,10 +202,10 @@ export default {
     let row = this.$route.params.row;
     if (row != undefined) {
       this.oper = "立即修改";
-      if(row.containerState!=null){
+      if (row.containerState != null) {
         this.arr = row.containerState.split("");
       }
-     
+
       // this.name=row.username
       this.form = Object.assign({}, this.form, row);
     } else {
@@ -201,7 +225,6 @@ export default {
       this.dialogTableVisible = false;
       this.form.userId = userid;
       this.form.username = name;
-     
     },
     queryList() {
       userquery({})

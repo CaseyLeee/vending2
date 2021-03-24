@@ -60,10 +60,10 @@ export const constantRoutes = [
     // }]
   },
 
-  
 
-  
-  
+
+
+
 ]
 
 /**
@@ -76,7 +76,7 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/ordermanage/orderlist',
     name: 'ordermanage',
-    meta: { title: '订单管理', icon: 'el-icon-s-help' ,roles:['admin','normal'] },
+    meta: { title: '订单管理', icon: 'el-icon-s-help', roles: ['admin', 'normal'] },
     children: [
       {
         path: 'orderlist',
@@ -88,18 +88,18 @@ export const asyncRoutes = [
         path: 'queryrefund',
         name: 'queryrefund',
         component: () => import('@/views/ordermanage/queryrefund'),
-        meta: { title: '退款查询', icon: 'table' ,roles:['admin']}
+        meta: { title: '退款查询', icon: 'table', roles: ['admin'] }
       }
-     
+
     ]
   },
   {
-    
+
     path: '/doormange',
     component: Layout,
     redirect: '/doormange/door',
     name: 'doormange',
-    meta: { title: '补货开门管理', icon: 'el-icon-s-help' ,roles:['normal']},
+    meta: { title: '补货开门管理', icon: 'el-icon-s-help', roles: ['normal'] },
     children: [
       {
         path: 'door',
@@ -107,7 +107,7 @@ export const asyncRoutes = [
         component: () => import('@/views/doormanage/doormanage'),
         meta: { title: '补货开门管理', icon: 'table' }
       }
-     
+
     ]
   },
   {
@@ -115,7 +115,7 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/countermanage/counterlist',
     name: 'countermanage',
-    meta: { title: '货柜管理', icon: 'el-icon-s-help' ,roles:['admin','normal'] },
+    meta: { title: '货柜管理', icon: 'el-icon-s-help', roles: ['admin', 'normal'] },
     children: [
       {
         path: 'counterlist',
@@ -143,7 +143,7 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/tenantsmanage/tenantslist',
     name: 'tenantsmanage',
-    meta: { title: '账户管理', icon: 'el-icon-s-help' ,roles:['admin'] },
+    meta: { title: '账户管理', icon: 'el-icon-s-help', roles: ['admin'] },
     children: [
       {
         path: 'tenantslist',
@@ -171,27 +171,33 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/rootmanage/rootbind',
     name: 'rootmanege',
-    meta: { title: '设备管理', icon: 'el-icon-s-help' ,roles:['admin'] },
+    meta: { title: '设备类型管理', icon: 'el-icon-s-help', roles: ['admin'] },
     children: [
       {
         path: 'rootbind',
         name: 'rootbind',
         component: () => import('@/views/rootmanage/rootbind'),
-        meta: { title: '设备商品绑定', icon: 'table' }
+        meta: { title: '设备类型商品绑定', icon: 'table' }
       },
       {
         path: 'rootadd',
         name: 'rootadd',
         component: () => import('@/views/rootmanage/rootadd'),
-        meta: { title: '设备添加', icon: 'table' }
+        meta: { title: '设备类型添加', icon: 'table' }
       },
       {
         path: 'rootlist',
         name: 'rootlist',
         component: () => import('@/views/rootmanage/rootlist'),
-        meta: { title: '设备列表', icon: 'table' }
+        meta: { title: '设备类型列表', icon: 'table' }
       }
-    
+      ,
+      {
+        path: 'rootedit',
+        name: 'rootedit',
+        component: () => import('@/views/rootmanage/rootadd'),
+        meta: { title: '设备类型修改', icon: 'table' }
+      }
     ]
   },
   {
@@ -199,7 +205,7 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/goodsmanage/goodslist',
     name: 'goodsmanage',
-    meta: { title: '商品管理', icon: 'el-icon-s-help' ,roles:['admin']},
+    meta: { title: '商品管理', icon: 'el-icon-s-help', roles: ['admin'] },
     children: [
       {
         path: 'goodslist',

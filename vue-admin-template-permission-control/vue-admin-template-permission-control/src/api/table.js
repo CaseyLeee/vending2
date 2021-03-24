@@ -29,6 +29,13 @@ export function deviceTypeadd(data) {
     data
   })
 }
+export function deviceTypeupdate(data) {
+  return request({
+    url: '/backGround/deviceType/update',
+    method: 'post',
+    data
+  })
+}
 export function deviceTypelist(params) {
   return request({
     url: '/backGround/deviceType/list',
